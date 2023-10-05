@@ -28,11 +28,10 @@ class ImageToPDF:
             user_input = jarvis.input('Your choice: ')
             user_input = user_input.lower()
 
-            if user_input == 'q' or user_input == 'quit' or user_input == '3':
+            if user_input in ['q', 'quit', '3']:
                 jarvis.say("See you next time :D", Fore.CYAN)
                 break
 
-            # For single image to be converted to pdf
             elif user_input == '1':
                 while True:
                     image_path = jarvis.input(
@@ -44,7 +43,6 @@ class ImageToPDF:
                             'Opps! Looks like you entered an invalid path. Kindly Re-enter', Fore.RED)
                 pdf_bytes = self.single_image_to_pdf(jarvis, image_path)
 
-            # For multiple images in a folder to be converted to pdf
             elif user_input == '2':
                 while True:
                     folder_path = jarvis.input(
@@ -56,7 +54,6 @@ class ImageToPDF:
                             'Opps! Looks like you entered an invalid path. Kindly Re-enter', Fore.RED)
                 pdf_bytes = self.folder_to_pdf(jarvis, folder_path)
 
-            # For an incorrectly entered option
             else:
                 jarvis.incorrect_option()
                 continue
@@ -64,8 +61,8 @@ class ImageToPDF:
             destination = jarvis.get_saving_directory(self.path)
             # Naming and saving the pdf file
             file_name = jarvis.input('What would you like to name your pdf? ')
-            pdf_destination = destination + '/' + file_name + '.pdf'
-            print('Final Destination ' + pdf_destination)
+            pdf_destination = f'{destination}/{file_name}.pdf'
+            print(f'Final Destination {pdf_destination}')
             self.save_pdf(jarvis, pdf_bytes, pdf_destination)
 
     def available_options(self, jarvis):
@@ -95,20 +92,19 @@ class ImageToPDF:
         in a given folder path to a single PDF file
         """
         self.path = folder_path
-        source_images = []
         os.chdir(self.path)
-        for image in os.listdir(os.getcwd()):
-            if image.endswith('.jpg') or image.endswith('.png'):
-                source_images.append(image)
-        pdf_bytes = img2pdf.convert(source_images)
-        return pdf_bytes
+        source_images = [
+            image
+            for image in os.listdir(os.getcwd())
+            if image.endswith('.jpg') or image.endswith('.png')
+        ]
+        return img2pdf.convert(source_images)
 
     def save_pdf(self, jarvis, pdf_bytes, destination):
         """
         Save the pdf to the thus supplied location
         or prompt the user to choose a new location
         """
-        pdf_file = open(destination, 'wb')
-        pdf_file.write(pdf_bytes)
-        pdf_file.close()
+        with open(destination, 'wb') as pdf_file:
+            pdf_file.write(pdf_bytes)
         jarvis.say('Your pdf is created successfully', Fore.GREEN)

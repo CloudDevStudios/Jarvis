@@ -13,9 +13,9 @@ def gen_num():
     d = randint(0, 9)
     while b == a:
         b = randint(0, 9)
-    while c == b or c == a:
+    while c in [b, a]:
         c = randint(0, 9)
-    while d == a or d == b or d == c:
+    while d in [a, b, c]:
         d = randint(0, 9)
     return a, b, c, d
 
@@ -55,17 +55,17 @@ def bulls_and_cows(jarvis, s):
             jarvis.say('Thank you for playing! New games are coming soon!', Fore.CYAN)
             break
         else:
-            tries = int(0)
             a, b, c, d = gen_num()
 
             # set 'checker' with 10 entries for digits 0-9
             checker = [0] * 10
-            checker[a] = int(1)
-            checker[b] = int(2)
-            checker[c] = int(3)
-            checker[d] = int(4)
+            checker[a] = 1
+            checker[b] = 2
+            checker[c] = 3
+            checker[d] = 4
             jarvis.say('Secret number was generated!', Fore.CYAN)
 
+            tries = 0
             # loop while the secret number is found or user quits
             while True:
                 jarvis.say('Enter your guess, please (type "q" to quit):', Fore.CYAN)
@@ -77,13 +77,13 @@ def bulls_and_cows(jarvis, s):
                 try:
                     guess_num = int(guess_num)
                 except ValueError:
-                    jarvis.say(Fore.RED + 'Invalid guess! ' + Fore.RESET + '(should be a number)')
+                    jarvis.say(f'{Fore.RED}Invalid guess! {Fore.RESET}(should be a number)')
                     continue
 
                 tries += 1
 
-                cows = int(0)
-                bulls = int(0)
+                cows = 0
+                bulls = 0
                 cows, bulls = check(
                     checker, guess_num, 1000, 10000, checker[a], cows, bulls)
                 cows, bulls = check(
@@ -92,13 +92,7 @@ def bulls_and_cows(jarvis, s):
                     checker, guess_num, 10, 100, checker[c], cows, bulls)
                 cows, bulls = check(
                     checker, guess_num, 1, 10, checker[d], cows, bulls)
-                jarvis.say(
-                    Fore.CYAN
-                    + 'Cows: '
-                    + str(cows)
-                    + '\tBulls: '
-                    + str(bulls)
-                    + '\n')
+                jarvis.say(f'{Fore.CYAN}Cows: {str(cows)}' + '\tBulls: ' + str(bulls) + '\n')
                 if bulls == 4:
                     jarvis.say('Congratulations! Your guess is right:', Fore.CYAN)
                     jarvis.say(
@@ -108,12 +102,6 @@ def bulls_and_cows(jarvis, s):
                         + str(b)
                         + str(c)
                         + str(d))
-                    jarvis.say(
-                        Fore.CYAN
-                        + 'You made '
-                        + Fore.GREEN
-                        + str(tries)
-                        + Fore.CYAN
-                        + ' tries.')
+                    jarvis.say(f'{Fore.CYAN}You made {Fore.GREEN}{tries}{Fore.CYAN} tries.')
                     jarvis.say('Start a new game or quit? (Type "s" or "q"):', Fore.CYAN)
                     break

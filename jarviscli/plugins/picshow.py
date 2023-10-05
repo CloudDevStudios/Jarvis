@@ -12,6 +12,5 @@ def display_pics(jarvis, string):
     -- Example:
         display pics of castles
     """
-    url = "https://www.google.com/search?tbm=isch&q={}".format(
-        string.replace("of", ""))
+    url = f'https://www.google.com/search?tbm=isch&q={string.replace("of", "")}'
     webbrowser.open(url)

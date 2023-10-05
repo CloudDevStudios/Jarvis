@@ -19,7 +19,7 @@ def update_system(jarvis, s):
     user_distribution = user_distributor_id.decode("utf-8").split('\t')[1]
 
     print(user_distribution)
-    if user_distribution == "Ubuntu\n" or user_distribution == "LinuxMint\n":
+    if user_distribution in ["Ubuntu\n", "LinuxMint\n"]:
         os.system('sudo apt-get update && sudo apt-get upgrade -y')
 
     elif user_distribution == "Fedora\n":

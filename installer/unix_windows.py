@@ -1,11 +1,6 @@
 import os
 
-if os.name == 'nt':
-    IS_WIN = True
-else:
-    IS_WIN = False
-
-
+IS_WIN = os.name == 'nt'
 if IS_WIN:
     if os.system('py --version') == 0:
         PY3 = "py -3"

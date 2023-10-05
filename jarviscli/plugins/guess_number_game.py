@@ -18,19 +18,19 @@ def helloworld(jarvis, s):
     jarvis.say("----------------------------", Fore.BLUE)
     hearts = jarvis.input("Choose mode: Hard(6 lives) or Normal(8 lives)", Fore.GREEN)
     hearts = hearts.lower()
-    while hearts != 'hard' and hearts != 'normal' and hearts != 'exit':
+    while hearts not in ['hard', 'normal', 'exit']:
         jarvis.say("I can't understand you. Can you tell me again?", Fore.BLUE)
         hearts = jarvis.input("Choose mode: Hard(6 lives) or Normal(8 lives)", Fore.GREEN)
         hearts = hearts.lower()
 
     lives = 0
-    if hearts == 'hard':
+    if hearts == 'exit':
+        return
+
+    elif hearts == 'hard':
         lives = 6
     elif hearts == 'normal':
         lives = 8
-    elif hearts == 'exit':
-        return
-
     show(1, 101, jarvis)
     jarvis.say("\n")
 
@@ -45,43 +45,30 @@ def helloworld(jarvis, s):
 
     while number != num and lives > 1:
         flag = True
-        if num < number:
-            if end >= number >= start:
-                jarvis.say("The number that i am thinking is smaller than the one you guessed", Fore.BLUE)
-                end = number - 1
-                show(start, end + 1, jarvis)
-            else:
-                flag = False
+        if num < number and end >= number >= start:
+            jarvis.say("The number that i am thinking is smaller than the one you guessed", Fore.BLUE)
+            end = number - 1
+            show(start, end + 1, jarvis)
+        elif num < number or num > number and not end >= number >= start:
+            flag = False
         elif num > number:
-            if end >= number >= start:
-                jarvis.say("The number that i am thinking is bigger than the one you guessed", Fore.BLUE)
-                start = number + 1
-                show(start, end + 1, jarvis)
-            else:
-                flag = False
-
+            jarvis.say("The number that i am thinking is bigger than the one you guessed", Fore.BLUE)
+            start = number + 1
+            show(start, end + 1, jarvis)
         if flag:
             lives -= 1
             jarvis.say("")
-            output = "make the next guess (lives:" + str(lives) + ")"
-            jarvis.say(output, Fore.BLUE)
-            number = jarvis.input()
-
-            while not number.isnumeric():
-                jarvis.say("Your input was not a number", Fore.BLUE)
-                number = jarvis.input("give me a number between(1-100):", Fore.GREEN)
-            number = int(number)
-
+            output = f"make the next guess (lives:{lives})"
         else:
             jarvis.say("Your number is out of bounds")
-            output = "Give a number between[" + str(start) + "-" + str(end) + "]"
-            jarvis.say(output, Fore.BLUE)
-            number = jarvis.input()
+            output = f"Give a number between[{str(start)}-{str(end)}]"
+        jarvis.say(output, Fore.BLUE)
+        number = jarvis.input()
 
-            while not number.isnumeric():
-                jarvis.say("Your input was not a number", Fore.BLUE)
-                number = jarvis.input("give me a number between(1-100):", Fore.GREEN)
-            number = int(number)
+        while not number.isnumeric():
+            jarvis.say("Your input was not a number", Fore.BLUE)
+            number = jarvis.input("give me a number between(1-100):", Fore.GREEN)
+        number = int(number)
 
     if number == num:
         jarvis.say("You found it!", Fore.BLUE)
@@ -100,7 +87,7 @@ def show(start, end, jarvis):
 
             c = c + 1
     for i in range(start, end, 1):
-        output += str(i) + "  "
+        output += f"{str(i)}  "
         if i % 20 == 0:
             output += "\n"
         if i < 10:

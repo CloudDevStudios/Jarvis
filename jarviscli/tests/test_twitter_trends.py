@@ -18,7 +18,8 @@ class TwitterTrendsTest(PluginTest):
     def test_sample_countries(self):
         # Test Greece country
         response = requests.get(
-            f"http://api-twitter-trends.herokuapp.com/trends?location=greece")
+            "http://api-twitter-trends.herokuapp.com/trends?location=greece"
+        )
         self.assertTrue(response.ok)
 
     def test_is_out_of_range_true(self):

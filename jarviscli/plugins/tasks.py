@@ -26,14 +26,16 @@ class TaskManager():
         if task_count == 0:
             jarvis.say("Your Task List Is Empty, Good Job")
             return
-        jarvis.say("You Have {} {}".format(task_count, "Task" if task_count == 1 else "Tasks"))
+        jarvis.say(f'You Have {task_count} {"Task" if task_count == 1 else "Tasks"}')
         for i in range(task_count):
             try:
                 priority = self.tasks[i]["priority"]
-                jarvis.say("{}. {} PR: {}".format(
-                    i + 1, self.tasks[i]["name"], priority), self.get_color_with_priority(priority))
+                jarvis.say(
+                    f'{i + 1}. {self.tasks[i]["name"]} PR: {priority}',
+                    self.get_color_with_priority(priority),
+                )
             except BaseException:
-                jarvis.say("{}. {}".format(i + 1, self.tasks[i]["name"]))
+                jarvis.say(f'{i + 1}. {self.tasks[i]["name"]}')
 
     def get_color_with_priority(self, priority):
         if priority == "High":
@@ -53,7 +55,7 @@ class TaskManager():
     def choose_task(self, exit_text, input_text, jarvis):
         tasks_count = len(self.tasks)
         self.list_all(jarvis)
-        jarvis.say("{}. {}".format(tasks_count + 1, exit_text))
+        jarvis.say(f"{tasks_count + 1}. {exit_text}")
         return self.get_choice(input_text, tasks_count, tasks_count + 1, jarvis)
 
     def update_task(self, jarvis):
@@ -61,7 +63,7 @@ class TaskManager():
         if task_index == -1:
             return
         chosen_task_name = self.tasks[task_index - 1]["name"]
-        jarvis.say("Chosen Task: {}".format(chosen_task_name))
+        jarvis.say(f"Chosen Task: {chosen_task_name}")
         updated_task = jarvis.input("Enter Updated Task: ", Fore.GREEN)
         new_tasks = map(lambda task: {"name": updated_task} if task["name"] == chosen_task_name else task, self.tasks)
         self.update_tasks(list(new_tasks))
@@ -167,7 +169,6 @@ class TaskManager():
             return
 
     def get_option(self, jarvis):
-        options = {1: "list_all", 2: "ann_new", 3: "edit_cur", 4: "delete_task", 5: "add_priority", 6: "sort"}
         jarvis.say("")
         jarvis.say("How Can I Help You?", Fore.BLUE)
         jarvis.say("")
@@ -182,8 +183,8 @@ class TaskManager():
         choice = self.get_choice("Enter your choice: ", 6, 7, jarvis)
         if choice == -1:
             return
-        else:
-            return options[choice]
+        options = {1: "list_all", 2: "ann_new", 3: "edit_cur", 4: "delete_task", 5: "add_priority", 6: "sort"}
+        return options[choice]
 
     def get_choice(self, input_text, max_valid_value, terminator, jarvis):
         while True:

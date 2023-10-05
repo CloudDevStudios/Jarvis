@@ -19,13 +19,13 @@ def spin(jarvis, s):
     num = jarvis.input_number()
     jarvis.say('enter the elements one after another\n')
     wheel = []
-    for i in range(0, int(num)):
+    for _ in range(0, int(num)):
         entry = jarvis.input()
         wheel.append(entry)
     reply = 'y'
     while (reply == 'y'):
         jarvis.say('Let the wheel spin !!!!!!!!!\n')
-        jarvis.say('result is: ' + spinit(wheel))
+        jarvis.say(f'result is: {spinit(wheel)}')
         jarvis.say('Do you want to spin again?? press:y ')
         reply = jarvis.input()
     jarvis.say("Thank you for trying spin wheel ")

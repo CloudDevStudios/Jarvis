@@ -126,33 +126,33 @@ class Calculator:
         self.num.delete(0, 'end')
         self.num.focus_set()
         self.operator = "+"
-        self.buffer["text"] = str(self.a) + " " + str(self.operator)
+        self.buffer["text"] = f"{str(self.a)} {self.operator}"
 
     def minus(self):
         self.a = self.num.get()
         self.num.delete(0, 'end')
         self.num.focus_set()
         self.operator = "-"
-        self.buffer["text"] = str(self.a) + " " + str(self.operator)
+        self.buffer["text"] = f"{str(self.a)} {self.operator}"
 
     def mult(self):
         self.a = self.num.get()
         self.num.delete(0, 'end')
         self.num.focus_set()
         self.operator = "x"
-        self.buffer["text"] = str(self.a) + " " + str(self.operator)
+        self.buffer["text"] = f"{str(self.a)} {self.operator}"
 
     def div(self):
         self.a = self.num.get()
         self.num.delete(0, 'end')
         self.num.focus_set()
         self.operator = "/"
-        self.buffer["text"] = str(self.a) + " " + str(self.operator)
+        self.buffer["text"] = f"{str(self.a)} {self.operator}"
 
     def sqroot(self):
         try:
             self.a = self.num.get()
-            self.buffer["text"] = "sqrt(" + str(self.a) + ")"
+            self.buffer["text"] = f"sqrt({str(self.a)})"
             if float(self.a) >= 0:
                 self.an = math.sqrt(float(self.a))
                 if len(str(self.an)) > 17:
@@ -161,9 +161,7 @@ class Calculator:
                     self.ans["text"] = str(math.sqrt(float(self.a)))
             else:
                 self.ans["text"] = "Not a real number"
-        except ValueError:
-            self.ans["text"] = "Invalid Input "
-        except TypeError:
+        except (ValueError, TypeError):
             self.ans["text"] = "Invalid Input "
         except OverflowError:
             self.ans["text"] = "Out of range"
@@ -171,7 +169,7 @@ class Calculator:
     def fact(self):
         try:
             self.a = self.num.get()
-            self.buffer["text"] = str(self.a) + "!"
+            self.buffer["text"] = f"{str(self.a)}!"
             if float(self.a) >= 0:
                 self.an = str(math.factorial(float(self.a)))
                 self.ans["text"] = self.an
@@ -179,9 +177,7 @@ class Calculator:
                     self.ans["text"] = "Out of Range"
             else:
                 self.ans["text"] = "Error"
-        except ValueError:
-            self.ans["text"] = "Invalid Input "
-        except TypeError:
+        except (ValueError, TypeError):
             self.ans["text"] = "Invalid Input "
         except OverflowError:
             self.ans["text"] = "Out of range"
@@ -191,19 +187,17 @@ class Calculator:
         self.num.delete(0, 'end')
         self.num.focus_set()
         self.operator = "^"
-        self.buffer["text"] = str(self.a) + str(self.operator)
+        self.buffer["text"] = str(self.a) + self.operator
 
     def sin(self):
         try:
             self.a = float(self.num.get()) / 57.2958  # convert to deg
-            self.buffer["text"] = "sin(" + str(self.num.get()) + ")"
+            self.buffer["text"] = f"sin({str(self.num.get())})"
             self.an = str(round(math.sin(float(self.a)), 4))
             self.ans["text"] = self.an
             if len(self.an) > 17:
                 self.ans["text"] = "Out of Range"
-        except ValueError:
-            self.ans["text"] = "Invalid Input "
-        except TypeError:
+        except (ValueError, TypeError):
             self.ans["text"] = "Invalid Input "
         except OverflowError:
             self.ans["text"] = "Out of range"
@@ -211,14 +205,12 @@ class Calculator:
     def cos(self):
         try:
             self.a = float(self.num.get()) / 57.2958  # convert to deg
-            self.buffer["text"] = "cos(" + str(self.num.get()) + ")"
+            self.buffer["text"] = f"cos({str(self.num.get())})"
             self.an = str(round(math.cos(float(self.a)), 4))
             self.ans["text"] = self.an
             if len(self.an) > 17:
                 self.ans["text"] = "Out of Range"
-        except ValueError:
-            self.ans["text"] = "Invalid Input "
-        except TypeError:
+        except (ValueError, TypeError):
             self.ans["text"] = "Invalid Input "
         except OverflowError:
             self.ans["text"] = "Out of range"
@@ -226,14 +218,12 @@ class Calculator:
     def tan(self):
         try:
             self.a = float(self.num.get()) / 57.2958  # convert to deg
-            self.buffer["text"] = "tan(" + str(self.num.get()) + ")"
+            self.buffer["text"] = f"tan({str(self.num.get())})"
             self.an = str(round(math.tan(float(self.a)), 4))
             self.ans["text"] = self.an
             if len(self.an) > 17:
                 self.ans["text"] = "Out of Range"
-        except ValueError:
-            self.ans["text"] = "Invalid Input "
-        except TypeError:
+        except (ValueError, TypeError):
             self.ans["text"] = "Invalid Input "
         except OverflowError:
             self.ans["text"] = "Out of range"
@@ -251,40 +241,23 @@ class Calculator:
             self.b = self.num.get()
             if self.operator == "+":
                 self.an = str(float(self.a) + float(self.b))
-                if len(self.an) < 17:
-                    self.ans["text"] = self.an
-                else:
-                    self.ans["text"] = "Out of Range"
+                self.ans["text"] = self.an if len(self.an) < 17 else "Out of Range"
             elif self.operator == "-":
                 self.an = str(float(self.a) - float(self.b))
-                if len(self.an) < 17:
-                    self.ans["text"] = self.an
-                else:
-                    self.ans["text"] = "Out of Range"
+                self.ans["text"] = self.an if len(self.an) < 17 else "Out of Range"
             elif self.operator == "x":
                 self.an = str(float(self.a) * float(self.b))
-                if len(self.an) < 17:
-                    self.ans["text"] = self.an
-                else:
-                    self.ans["text"] = "Out of Range"
+                self.ans["text"] = self.an if len(self.an) < 17 else "Out of Range"
             elif self.operator == "^":
                 self.an = str(math.pow(float(self.a), float(self.b)))
-                if len(self.an) < 17:
-                    self.ans["text"] = self.an
-                else:
-                    self.ans["text"] = "Out of Range"
+                self.ans["text"] = self.an if len(self.an) < 17 else "Out of Range"
             elif self.operator == "/":
                 if float(self.b) != 0:
                     self.an = str(round(float(self.a) / float(self.b), 3))
-                    if len(self.an) < 17:
-                        self.ans["text"] = self.an
-                    else:
-                        self.ans["text"] = "Out of Range"
+                    self.ans["text"] = self.an if len(self.an) < 17 else "Out of Range"
                 else:
                     self.ans["text"] = "Not a number"
-        except ValueError:
-            self.ans["text"] = "Invalid Input "
-        except TypeError:
+        except (ValueError, TypeError):
             self.ans["text"] = "Invalid Input "
         except OverflowError:
             self.ans["text"] = "Out of range"

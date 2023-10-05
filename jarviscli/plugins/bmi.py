@@ -67,7 +67,7 @@ class Bmi:
         According the bmi number, print_body_state finds out the state of the body
         and prints it to the user
         """
-        print("BMI:", str(bmi))
+        print("BMI:", bmi)
         if bmi < 16:
             print(Back.RED, " " * 2, Style.RESET_ALL)
             jarvis.say('Severe thinness')

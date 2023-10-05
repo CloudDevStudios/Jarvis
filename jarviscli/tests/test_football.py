@@ -33,14 +33,18 @@ class FootballTest(PluginTest):
             compId = 1
             self.test.competition(self.jarvis_api, compId)
             get_mock.assert_called_with(
-                "https://api.football-data.org/v2/competitions/{}/standings".format(compId), headers=headers)
+                f"https://api.football-data.org/v2/competitions/{compId}/standings",
+                headers=headers,
+            )
 
     def test_matches(self):
         with patch.object(requests, 'get', headers=headers) as get_mock:
             compId = 1
             self.test.matches(self.jarvis_api, compId)
             get_mock.assert_called_with(
-                "https://api.football-data.org/v2/matches?competitions={}".format(compId), headers=headers)
+                f"https://api.football-data.org/v2/matches?competitions={compId}",
+                headers=headers,
+            )
 
 
 if __name__ == '__main__':

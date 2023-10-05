@@ -26,7 +26,7 @@ def get_option(jarvis):
             option = int(jarvis.input("Enter your choice: ", Fore.GREEN))
             if option == 3:
                 return
-            elif option == 1 or option == 2:
+            elif option in {1, 2}:
                 return option
             else:
                 jarvis.say(
@@ -52,11 +52,7 @@ def plain_to_cipher(jarvis):
                 converted += i
         else:
             x = ord(i)
-            if 192 <= x <= 255:
-                converted += chr((ord(i) - 195) % 63 + 192)
-            else:
-                converted += i
-
+            converted += chr((ord(i) - 195) % 63 + 192) if 192 <= x <= 255 else i
     jarvis.say(converted, Fore.YELLOW)
 
 
@@ -79,11 +75,7 @@ def cipher_to_plain(jarvis):
                 converted += i
         else:
             x = ord(i)
-            if 192 <= x <= 255:
-                converted += chr((ord(i) - 189) % 63 + 192)
-            else:
-                converted += i
-
+            converted += chr((ord(i) - 189) % 63 + 192) if 192 <= x <= 255 else i
     jarvis.say(converted, Fore.YELLOW)
 
 

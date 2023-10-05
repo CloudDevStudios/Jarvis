@@ -88,20 +88,15 @@ class morsecode:
                 # Changes the character with it's morse code equivalent
                 encoded = encoded + self.morse_code[letter] + " "
             else:
-                encoded = encoded + "| "
+                encoded = f"{encoded}| "
 
         return encoded
 
     def encoder_input(self, jarvis, text):
 
         while True:
-            correct = True
             check_input = jarvis.input(text)
-            for letter in check_input.upper():
-                if not (letter in self.encoded_char):
-                    correct = False
-                    break
-
+            correct = all(letter in self.encoded_char for letter in check_input.upper())
             if (correct):
                 return check_input
 
@@ -120,7 +115,7 @@ class morsecode:
 
             else:
                 if current == "|":
-                    decoded = decoded + " "
+                    decoded = f"{decoded} "
                 else:
 
                     try:
@@ -139,12 +134,8 @@ class morsecode:
     def decoder_input(self, jarvis, text):
 
         while True:
-            correct = True
             check_input = jarvis.input(text)
-            for letter in check_input:
-                if not (letter in self.decoded_char):
-                    correct = False
-                    break
+            correct = all(letter in self.decoded_char for letter in check_input)
             if (correct):
                 return check_input
 

@@ -29,12 +29,12 @@ def Os__MAC(jarvis, s):
         + '[!] Operating System Information'
         + Style.RESET_ALL,
         Fore.BLUE)
-    jarvis.say('[*] Kernel: ' + sys(), Fore.GREEN)
-    jarvis.say('[*] Kernel Release Version: ' + release(), Fore.GREEN)
-    jarvis.say('[*] macOS System version: ' + mac_ver()[0], Fore.GREEN)
+    jarvis.say(f'[*] Kernel: {sys()}', Fore.GREEN)
+    jarvis.say(f'[*] Kernel Release Version: {release()}', Fore.GREEN)
+    jarvis.say(f'[*] macOS System version: {mac_ver()[0]}', Fore.GREEN)
     for _ in architecture():
         if _ != '':
-            jarvis.say('[*] ' + _, Fore.GREEN)
+            jarvis.say(f'[*] {_}', Fore.GREEN)
 
 
 @require(platform=[LINUX, WINDOWS])
@@ -42,11 +42,11 @@ def Os__MAC(jarvis, s):
 def Os__LINUX(jarvis, s):
     """Displays information about your operating system"""
     jarvis.say('[!] Operating System Information', Fore.BLUE)
-    jarvis.say('[*] ' + sys(), Fore.GREEN)
-    jarvis.say('[*] ' + release(), Fore.GREEN)
-    jarvis.say('[*] ' + distro.name(), Fore.GREEN)
+    jarvis.say(f'[*] {sys()}', Fore.GREEN)
+    jarvis.say(f'[*] {release()}', Fore.GREEN)
+    jarvis.say(f'[*] {distro.name()}', Fore.GREEN)
     for _ in architecture():
-        jarvis.say('[*] ' + _, Fore.GREEN)
+        jarvis.say(f'[*] {_}', Fore.GREEN)
 
 
 @require(platform=LINUX)
@@ -96,13 +96,14 @@ def check_ram__WINDOWS(jarvis, s):
     def format(size):
         mb, _ = divmod(size, 1024 * 1024)
         gb, mb = divmod(mb, 1024)
-        return "%s GB %s MB" % (gb, mb)
-    jarvis.say("Total RAM: %s" % (format(mem.total)), Fore.BLUE)
+        return f"{gb} GB {mb} MB"
+
+    jarvis.say(f"Total RAM: {format(mem.total)}", Fore.BLUE)
     if mem.percent > 80:
         color = Fore.RED
     elif mem.percent > 60:
         color = Fore.YELLOW
     else:
         color = Fore.GREEN
-    jarvis.say("Available RAM: %s" % (format(mem.available)), color)
+    jarvis.say(f"Available RAM: {format(mem.available)}", color)
     jarvis.say("RAM used: %s%%" % (mem.percent), color)

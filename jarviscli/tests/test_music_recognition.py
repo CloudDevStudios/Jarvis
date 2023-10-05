@@ -22,10 +22,10 @@ class MusicRecognitionTest(PluginTest):
     def mock_list_microphones():
         return ['mock_mic']
 
-    def mock_microphone(device_index):
+    def mock_microphone(self):
         return MagicMock()
 
-    def mock_record(source, duration):
+    def mock_record(self, duration):
         """
         Method used to mock the method record
         of speech_recognition to return a 15s
@@ -35,12 +35,11 @@ class MusicRecognitionTest(PluginTest):
         song = requests.get(
             'https://drive.google.com/uc?export=download&id=1LAM_dxzuGlrCehg4_wIf68Z_erNaMXGs',
             stream=True)
-        if song.status_code == 200:
-            mock_object = Mock()
-            mock_object.get_wav_data.return_value = song.content
-            return mock_object
-        else:
+        if song.status_code != 200:
             raise Exception("Could not download test music")
+        mock_object = Mock()
+        mock_object.get_wav_data.return_value = song.content
+        return mock_object
 
     @patch('speech_recognition.Microphone.list_microphone_names', side_effect=mock_list_microphones)
     @patch('speech_recognition.Microphone', side_effect=mock_microphone)

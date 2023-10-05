@@ -16,15 +16,16 @@ class MacManagerLinux():
 
     def __call__(self, jarvis, s):
         devices = self.request_devices(jarvis)
-        jarvis.say("You have " + str(len(devices)) + " internet device/s")
+        jarvis.say(f"You have {len(devices)} internet device/s")
         choice = self.show_options(jarvis, devices)
         if choice == "exit":
             return
         device_choice = list(devices[choice - 1].keys())[0]
         mac_choice = self.get_new_mac(
             "Please choose a new MAC address: ", jarvis)
-        jarvis.say('Setting device ' + str(device_choice) +
-                   ' to MAC address: ' + str(mac_choice))
+        jarvis.say(
+            f'Setting device {str(device_choice)} to MAC address: {str(mac_choice)}'
+        )
         new_mac = self.change_mac(device_choice, mac_choice, jarvis)
         devices = self.request_devices(jarvis)
         mac = list(devices[choice - 1].values())
@@ -78,15 +79,11 @@ class MacManagerLinux():
         devices = []
         for x in arr1:
             device_name = x.split(':')
-            if device_name[1].strip() == 'lo':
-                pass
-            else:
+            if device_name[1].strip() != 'lo':
                 regex = re.compile(r'([0-9a-f]{2}(?::[0-9a-f]{2}){5})')
                 mac = re.findall(regex, x)
                 if len(mac) >= 1:
                     devices.append({device_name[1].strip(): mac[0]})
-                else:
-                    pass
         return devices
 
     def show_options(self, jarvis, arr):
@@ -94,15 +91,12 @@ class MacManagerLinux():
         for x in range(len(arr)):
             mac = list(arr[x].values())
             name = list(arr[x].keys())
-            jarvis.say(str(count) + ": " + str(name[0]) + ' - ' + str(mac[0]))
+            jarvis.say(f"{str(count)}: {str(name[0])} - {str(mac[0])}")
             count = count + 1
-        jarvis.say(str(count) + ": Exit")
+        jarvis.say(f"{str(count)}: Exit")
         choice = self.get_choice("Please select a device or Exit: ",
                                  count, count, jarvis)
-        if choice == -1:
-            return "exit"
-        else:
-            return choice
+        return "exit" if choice == -1 else choice
 
     def change_mac(self, device, mac, jarvis):
         down = subprocess.Popen([f"sudo ip link set {device} down"],

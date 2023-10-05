@@ -81,10 +81,7 @@ class MockJarvisAPI(JarvisAPI):
         return self.is_voice_enabled
 
     def get_data(self, key):
-        if key not in self.data:
-            value = None
-        else:
-            value = self.data[key]
+        value = None if key not in self.data else self.data[key]
         self.call_history.record('get_data', (key), value)
         return value
 
@@ -110,15 +107,15 @@ class MockHistoryBuilder():
 
     def add_field(self, field):
         self._history._storage_by_field[field] = []
-        self._history.__dict__[
-            'contains_{}'.format(field)] = partial(
-            self._history.contains, field)
-        self._history.__dict__[
-            'view_{}'.format(field)] = partial(
-            self._history.view, field)
-        self._history.__dict__[
-            'last_{}'.format(field)] = partial(
-            self._history.last, field)
+        self._history.__dict__[f'contains_{field}'] = partial(
+            self._history.contains, field
+        )
+        self._history.__dict__[f'view_{field}'] = partial(
+            self._history.view, field
+        )
+        self._history.__dict__[f'last_{field}'] = partial(
+            self._history.last, field
+        )
         self._history._field_list.append(field)
         return self
 
@@ -148,8 +145,7 @@ class MockHistory():
         Do not call manually!
         """
         if len(self._field_list) != len(args):
-            raise ValueError(
-                "Argument count miss-match: {} --- {}".format(self._field_list, args))
+            raise ValueError(f"Argument count miss-match: {self._field_list} --- {args}")
         for i, field in enumerate(self._field_list):
             self._storage_by_field[field].append(args[i])
         self._storage_by_index.append(args)
@@ -174,15 +170,15 @@ class MockHistory():
         If index is None, returns all recorded values
         """
         if field is None:
-            if index is None:
-                return self._storage_by_index
-            else:
-                return self._storage_by_index[index]
+            return (
+                self._storage_by_index
+                if index is None
+                else self._storage_by_index[index]
+            )
+        if index is None:
+            return self._storage_by_field[field]
         else:
-            if index is None:
-                return self._storage_by_field[field]
-            else:
-                return self._storage_by_field[field][index]
+            return self._storage_by_field[field][index]
 
     def last(self, field=None):
         """Shortcut for view with index -1"""
@@ -218,7 +214,7 @@ class PluginTest(unittest.TestCase):
         if valid is True:
             plugin_backend.valid = True
         else:
-            print("\n\nWARNING! Can't test plugin {} ({})\n\n".format(plugin_class, valid))
+            print(f"\n\nWARNING! Can't test plugin {plugin_class} ({valid})\n\n")
             plugin_backend.valid = False
 
         return plugin_backend

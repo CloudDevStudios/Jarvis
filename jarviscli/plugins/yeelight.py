@@ -87,7 +87,7 @@ class Yeelight:
         """
         Display the status of all the lights that are connected to the Lan.
         """
-        for v, ip in enumerate(self.discovered_bulbs):
+        for ip in self.discovered_bulbs:
             self.jarvis.say(
                 f"Name: {self.discovered_bulbs[ip]['name']}   Status: { yeelight.Bulb(ip).get_properties()['power']}")
 
@@ -97,8 +97,7 @@ class Yeelight:
         """
         for ip in self.discovered_bulbs:
             yeelight.Bulb(ip).turn_on()
-            name = self.discovered_bulbs[ip]['name']
-            if name:
+            if name := self.discovered_bulbs[ip]['name']:
                 self.jarvis.say(f"Bulb {name} is on.")
             else:
                 self.jarvis.say(f"Bulb {ip} is on.")
@@ -109,8 +108,7 @@ class Yeelight:
         """
         for ip in self.discovered_bulbs:
             yeelight.Bulb(ip).turn_off()
-            name = self.discovered_bulbs[ip]['name']
-            if name:
+            if name := self.discovered_bulbs[ip]['name']:
                 self.jarvis.say(f"Bulb {name} is off.")
             else:
                 self.jarvis.say(f"Bulb {ip} is off.")
@@ -139,7 +137,8 @@ class Yeelight:
             while not input_code:
                 try:
                     input_code = self.jarvis.input(
-                        f"Choose the number that corresponds to the bulb: ")
+                        "Choose the number that corresponds to the bulb: "
+                    )
                     if self.is_valid_input(int(input_code), upper_bound):
                         raise ValueError
                 except ValueError:
@@ -188,22 +187,21 @@ class Yeelight:
                 input = self.get_bulb_number(len(unknown_bulbs) - 1)
                 if self.is_exit_input(input):
                     return self.exit_msg
-                else:
-                    self.jarvis.say(
-                        "The chosen bulb will flash now.", color=Fore.YELLOW)
-                    """
+                self.jarvis.say(
+                    "The chosen bulb will flash now.", color=Fore.YELLOW)
+                """
 					Bulb flashing for the user to identify and
 					name it easily
 					"""
-                    for i in range(3):
-                        yeelight.Bulb(unknown_bulbs[input]).turn_off()
-                        time.sleep(1)
-                        yeelight.Bulb(unknown_bulbs[input]).turn_on()
-                        time.sleep(1)
-                    name = self.validate_name()
-                    yeelight.Bulb(unknown_bulbs[input]).set_name(name)
-                    self.discovered_bulbs[unknown_bulbs[input]]['name'] = name
-                    unknown_bulbs.pop(input)
+                for _ in range(3):
+                    yeelight.Bulb(unknown_bulbs[input]).turn_off()
+                    time.sleep(1)
+                    yeelight.Bulb(unknown_bulbs[input]).turn_on()
+                    time.sleep(1)
+                name = self.validate_name()
+                yeelight.Bulb(unknown_bulbs[input]).set_name(name)
+                self.discovered_bulbs[unknown_bulbs[input]]['name'] = name
+                unknown_bulbs.pop(input)
 
     def is_exit_input(self, input) -> bool:
         if (type(input) == str and input.lower() == self.exit_msg):
@@ -219,14 +217,13 @@ class Yeelight:
             return True
 
     def is_valid_name(self, name) -> bool:
-        # checks if the name is already given in another bulb
-        for bulb in self.discovered_bulbs:
-            if self.discovered_bulbs[bulb]['name'] == name:
-                return False
-        return True
+        return all(
+            self.discovered_bulbs[bulb]['name'] != name
+            for bulb in self.discovered_bulbs
+        )
 
     def is_out_of_range(self, x: int, upper_bound) -> bool:
-        return (True if (x > upper_bound or x <= 0) else False)
+        return x > upper_bound or x <= 0
 
     def find_unknown_bulbs(self) -> List:
         return [ip for ip in self.discovered_bulbs if self.discovered_bulbs[ip]['name'] == '']

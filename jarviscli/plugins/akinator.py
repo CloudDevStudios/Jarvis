@@ -85,9 +85,16 @@ def main_game(jarvis):
         subprocess.run([imageViewerFromCommandLine, aki.picture])  # display image of answer
     except Exception:
         pass
-    correct = jarvis.input(f"It's " + aki.first_guess.name +
-                           " ! \n" + aki.first_guess.description + "\nWas I correct?\n")
-    if correct.lower() == "yes" or correct.lower() == "y":
+    correct = jarvis.input(
+        (
+            (
+                (f"It's {aki.first_guess.name}" + " ! \n")
+                + aki.first_guess.description
+            )
+            + "\nWas I correct?\n"
+        )
+    )
+    if correct.lower() in ["yes", "y"]:
         jarvis.say("Yay !!! :D", Fore.GREEN)
     else:
         jarvis.say("Oups :(", Fore.GREEN)

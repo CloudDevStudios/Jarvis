@@ -44,8 +44,7 @@ def check_prices(base, target):
     """
 
     # build the api url
-    url = 'https://api.cryptonator.com/api/ticker/{}-{}'.format(
-        base.lower(), target.lower())
+    url = f'https://api.cryptonator.com/api/ticker/{base.lower()}-{target.lower()}'
 
     try:
         response = requests.get(
@@ -54,7 +53,6 @@ def check_prices(base, target):
         price = response['ticker']['price']
         change = response['ticker']['change']
 
-    # this error occurs if the pair is non-existent
     except KeyError:
         print(
             "{WARNING}Wrong pair {}/{}!{COLOR_RESET} "
@@ -66,10 +64,10 @@ def check_prices(base, target):
                 WARNING=Fore.RED,
                 COLOR_RESET=Fore.RESET))
 
-    # results
     else:
-        print("\t{}/{}\nPrice: {}\nChange: {}\n".format(base.upper(),
-              target.upper(), price, print_in_color(change)))
+        print(
+            f"\t{base.upper()}/{target.upper()}\nPrice: {price}\nChange: {print_in_color(change)}\n"
+        )
 
 
 @plugin("cryptotracker")

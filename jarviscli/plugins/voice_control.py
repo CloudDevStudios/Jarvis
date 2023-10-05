@@ -22,7 +22,7 @@ def hear(jarvis, s):
     listen = False
     _jarvis = jarvis._jarvis  # calling jarvis object.
     _jarvis.speech.text_to_speech("Say listen to start voice mode")
-    while listen is False:
+    while not listen:
         try:
             with sr.Microphone() as source:
                 os.system('reset')  # for clearing the terminal.
@@ -31,19 +31,18 @@ def hear(jarvis, s):
                 audio = r.listen(source)  # Storing audio.
                 pinger = r.recognize_google(audio)  # Converting speech to text
             try:
-                if (pinger.lower() == "listen"):
-                    listen = True
-                    _jarvis.speech.text_to_speech("Voice mode activated")
-                    print("Voice mode activated. Say something!")
-                    break
-                else:
+                if pinger.lower() != "listen":
                     continue
+                listen = True
+                _jarvis.speech.text_to_speech("Voice mode activated")
+                print("Voice mode activated. Say something!")
+                break
             except LookupError:
                 continue   # For ignoring if your are not speaking anything.
         except sr.UnknownValueError:
             continue  # For ignoring the unreconized words error
 
-    while listen is True:
+    while listen:
         print("Say somthing")
         try:
             with sr.Microphone() as source:
@@ -58,9 +57,8 @@ def hear(jarvis, s):
                 break
             else:
                 print(pinger)
-                if listen:
-                    line = pinger
-                    jarvis.eval(line)
+                line = pinger
+                jarvis.eval(line)
 
         except LookupError:
             _jarvis.speech.text_to_speech('Audio cannot be read!')

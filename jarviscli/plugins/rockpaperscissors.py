@@ -42,7 +42,7 @@ class rockpaperscissors():
 
         i = 1
 
-        while(i <= int(rounds)):
+        while (i <= int(rounds)):
 
             user_move = self.get_users("Enter your move: ")
 
@@ -51,7 +51,7 @@ class rockpaperscissors():
                 break
 
             if (user_move == "score"):
-                txt = "You:" + str(user_score) + "  Jarvis:" + str(jarvis_score) + "  "
+                txt = f"You:{str(user_score)}  Jarvis:{str(jarvis_score)}  "
                 if (user_score > jarvis_score):
                     txt = txt + Back.GREEN + "You Winning" + Back.RESET
                 elif(user_score < jarvis_score):
@@ -63,26 +63,23 @@ class rockpaperscissors():
                 continue
 
             if (user_move == "rounds"):
-                jarvis.say("The current rounds is " + str(i) + "/" + str(rounds))
+                jarvis.say(f"The current rounds is {i}/{str(rounds)}")
                 continue
 
             jarvis_move = self.get_jarvis()
-            jarvis.say("Jarvis move: " + jarvis_move)
+            jarvis.say(f"Jarvis move: {jarvis_move}")
 
             g = self.game(user_move, jarvis_move)
 
             if (g == "W"):
                 user_score = user_score + 1
                 jarvis.say("\t" + Back.GREEN + "You WIN" + Back.RESET)
-                i = i + 1
             elif (g == "L"):
                 jarvis_score = jarvis_score + 1
                 jarvis.say("\t" + Back.RED + "Jarvis WIN" + Back.RESET)
-                i = i + 1
             else:
                 jarvis.say("\t" + Back.MAGENTA + "TIE" + Back.RESET)
-                i = i + 1
-
+            i += 1
         jarvis.say("")
         jarvis.say("\t\t" + "GAME OVER")
         jarvis.say("\t\t" + "--SCORE--")
@@ -99,14 +96,14 @@ class rockpaperscissors():
             r = str(i - 1)
 
             if (r == "1"):
-                r = r + "st"
+                r += "st"
             elif (r == "2"):
-                r = r + "nd"
+                r += "nd"
             elif (r == "3"):
-                r = r + "rd"
+                r += "rd"
             else:
-                r = r + "th"
-            jarvis.say("You terminate the game at " + r + " round")
+                r += "th"
+            jarvis.say(f"You terminate the game at {r} round")
 
         jarvis.say(txt)
 
@@ -154,12 +151,15 @@ class rockpaperscissors():
         condition = ""
 
         if (umove == jmove):
-            condition = "T"
+            return "T"
 
         else:
-            if ((umove == "r" and jmove == "s") or (umove == "s" and jmove == "p") or (umove == "p" and jmove == "r")):
-                condition = "W"
-            else:
-                condition = "L"
-
-        return condition
+            return (
+                "W"
+                if (
+                    (umove == "r" and jmove == "s")
+                    or (umove == "s" and jmove == "p")
+                    or (umove == "p" and jmove == "r")
+                )
+                else "L"
+            )

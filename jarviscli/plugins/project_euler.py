@@ -54,7 +54,7 @@ class Euler():
     def get_problem_by_number(self, number):
 
         # Form link depending on the task number and get the page via requests module
-        url = self.project_url + '/problem=' + str(number)
+        url = f'{self.project_url}/problem={str(number)}'
         try:
             page = requests.get(url)
         except ConnectionError:
@@ -69,7 +69,7 @@ class Euler():
 
         # Get the title of the problem and print it
         problem_header = content.find('h2').get_text()
-        header_to_show = 'Problem ' + str(number) + '. ' + problem_header
+        header_to_show = f'Problem {str(number)}. {problem_header}'
         self.jarvis.say('')
         self.jarvis.say(header_to_show, Fore.GREEN)
 
@@ -107,15 +107,16 @@ class Euler():
 
     def show_info(self):
         self.jarvis.say('')
-        self.jarvis.say('Website: ' + self.project_url, Fore.GREEN)
+        self.jarvis.say(f'Website: {self.project_url}', Fore.GREEN)
         self.jarvis.say("")
 
-        info_text = "Project Euler (named after Leonhard Euler) is a website dedicated to a series of computational "
-        info_text += "problems intended to be solved with computer programs. "
+        info_text = (
+            "Project Euler (named after Leonhard Euler) is a website dedicated to a series of computational "
+            + "problems intended to be solved with computer programs. "
+        )
         info_text += "The project attracts adults and students interested in mathematics and computer programming. "
         info_text += "Since its creation in 2001 by Colin Hughes, Project Euler has gained notability and popularity worldwide. "
-        info_text += "It now includes " + str(self.last_problem_id) + \
-            " problems. A new one is added once every one or two weeks. "
+        info_text += f"It now includes {str(self.last_problem_id)} problems. A new one is added once every one or two weeks. "
         info_text += "Problems are of varying difficulty, but each is solvable in less than a minute of CPU time using an efficient "
         info_text += "algorithm on a modestly powered computer. "
 
@@ -126,7 +127,7 @@ class Euler():
         # We need the number of the last problem
         # (in order to set limits on user's input)
         # Use bs4 to parse the page with recent problems
-        url = self.project_url + '/recent'
+        url = f'{self.project_url}/recent'
         page = requests.get(url)
         soup = bs4.BeautifulSoup(page.content, 'html.parser')
 
@@ -137,7 +138,4 @@ class Euler():
         # So get the second element of ResultSet
         last_problem_row = problem_table.find_all('tr')[1]
 
-        # The id is in the first column ('td' tag)
-        last_problem_id = int(last_problem_row.find('td').get_text())
-
-        return(last_problem_id)
+        return int(last_problem_row.find('td').get_text())

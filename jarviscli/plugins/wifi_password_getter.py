@@ -19,8 +19,12 @@ class WifiPasswordGetterLINUX:
             return
         password = self.display_password(profiles[choice - 1])
         strip_password = password.split("=", 1)[1]
-        jarvis.say("Wifi Name: " + profiles[choice - 1] +
-                   '\nPassword: ' + strip_password)
+        jarvis.say(
+            (
+                (f"Wifi Name: {profiles[choice - 1]}" + '\nPassword: ')
+                + strip_password
+            )
+        )
 
     def get_wifi_profiles(self):
         """
@@ -32,8 +36,7 @@ class WifiPasswordGetterLINUX:
                                stdout=subprocess.PIPE,
                                stderr=subprocess.STDOUT)
         (res, stderr) = out.communicate()
-        data = res.split('\n')
-        return data
+        return res.split('\n')
 
     def show_options(self, jarvis, arr):
         """
@@ -49,15 +52,12 @@ class WifiPasswordGetterLINUX:
         count = 1
         for x in range(len(arr) - 1):
             option = arr[x]
-            jarvis.say(str(count) + ": " + option)
+            jarvis.say(f"{str(count)}: {option}")
             count = count + 1
-        jarvis.say(str(count) + ": Exit")
+        jarvis.say(f"{str(count)}: Exit")
         choice = self.get_choice("Please select a number or Exit: ",
                                  count, count, jarvis)
-        if choice == -1:
-            return "exit"
-        else:
-            return choice
+        return "exit" if choice == -1 else choice
 
     def get_choice(self, input_text, max_valid_value, terminator, jarvis):
         """
@@ -162,12 +162,10 @@ class WifiPasswordGetterWINDOWS:
         """
         count = 1
         for profile in profiles:
-            jarvis.say(str(count) + ": " + profile)
+            jarvis.say(f"{str(count)}: {profile}")
             count = count + 1
-        jarvis.say(str(count) + ": Exit")
-        choice = self.get_choice(jarvis, "Please select a number or Exit: ",
-                                 count)
-        return choice
+        jarvis.say(f"{str(count)}: Exit")
+        return self.get_choice(jarvis, "Please select a number or Exit: ", count)
 
     def get_choice(self, jarvis, input_text, max_valid_value):
         """
@@ -217,12 +215,10 @@ class WifiPasswordGetterWINDOWS:
             results = [b.split(":")[1][1:-1]
                        for b in results if "Key Content" in b]
             try:
-                jarvis.say("Wifi Name: " + profile +
-                           '\nPassword: ' + results[0])
+                jarvis.say(((f"Wifi Name: {profile}" + '\nPassword: ') + results[0]))
 
             except IndexError:
-                jarvis.say("Wifi Name: " + profile +
-                           '\nPassword: ' + "UNKNOWN")
+                jarvis.say(((f"Wifi Name: {profile}" + '\nPassword: ') + "UNKNOWN"))
 
         except subprocess.CalledProcessError:
             jarvis.say(

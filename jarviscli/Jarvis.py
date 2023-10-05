@@ -88,7 +88,7 @@ class Jarvis(CmdInterpreter, object):
 
         # append calculate keyword to front of leading char digit (or '-') in line
         if words and (words[0].isdigit() or line[0] == "-"):
-            line = "calculate " + line
+            line = f"calculate {line}"
             words = line.split()
 
         if line.startswith("help"):
@@ -96,19 +96,15 @@ class Jarvis(CmdInterpreter, object):
         if line.startswith("status"):
             return line
 
-        if not words:
-            line = "None"
-        else:
-            line = self.parse_input(line)
+        line = "None" if not words else self.parse_input(line)
         return line
 
     def postcmd(self, stop, line):
         """Hook that executes after every command."""
         if self.first_reaction:
             self.prompt = (
-                Fore.MAGENTA
-                + "{} What can I do for you?\n".format(PROMPT_CHAR)
-                + Fore.RESET)
+                f"{Fore.MAGENTA}{PROMPT_CHAR} What can I do for you?\n{Fore.RESET}"
+            )
             self.first_reaction = False
         if self.enable_voice:
             self.speech.text_to_speech("What can I do for you?\n")
@@ -129,15 +125,11 @@ class Jarvis(CmdInterpreter, object):
             # input sanitisation to not mess up urls / numbers
             data = self.regex_dot.sub("", data)
 
-        # Check if Jarvis has a fixed response to this data
-        if data in self.fixed_responses:
-            output = self.fixed_responses[data]
-        else:
-            # if it doesn't have a fixed response, look if the data corresponds
-            # to an action
-            output = self.find_action(
-                data, self._plugin_manager.get_plugins().keys())
-        return output
+        return (
+            self.fixed_responses[data]
+            if data in self.fixed_responses
+            else self.find_action(data, self._plugin_manager.get_plugins().keys())
+        )
 
     def find_action(self, data, actions):
         """Checks if input is a defined action.
@@ -163,11 +155,10 @@ class Jarvis(CmdInterpreter, object):
                 # For the 'near' keyword, the words before 'near' are also needed
                 if word == "near":
                     initial_words = words[:words.index('near')]
-                    output = word + " " +\
-                        " ".join(initial_words + ["|"] + words_remaining)
+                    output = (f"{word} " + " ".join(initial_words + ["|"] + words_remaining))
                 elif word == action:  # command name exists
                     action_found = True
-                    output = word + " " + " ".join(words_remaining)
+                    output = f"{word} " + " ".join(words_remaining)
                     break
             if action_found:
                 break

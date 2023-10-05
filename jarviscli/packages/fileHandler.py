@@ -11,8 +11,7 @@ def json_serial(obj):
     """JSON serializer for objects not serializable by default json code"""
 
     if isinstance(obj, dt):
-        serial = obj.strftime(timeFormat)
-        return serial
+        return obj.strftime(timeFormat)
     raise TypeError("Type not serializable")
 
 
@@ -26,7 +25,7 @@ def read_file(name, default=None):
                 Fore.RED
                 + "Storage file not in right format. Backup stored as {0}.bak".format(name)
                 + Fore.RESET)
-            os.rename(name, name + ".bak")
+            os.rename(name, f"{name}.bak")
     return default
 
 

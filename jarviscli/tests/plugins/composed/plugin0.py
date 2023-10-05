@@ -14,7 +14,7 @@ class Plugin0_Sub0(Plugin):
         pass
 
     def run(self, jarvis, s):
-        jarvis.say("++sub0++ " + s)
+        jarvis.say(f"++sub0++ {s}")
 
 
 class Plugin3(Plugin):
@@ -47,7 +47,7 @@ class Plugin0_Sub1__test(Plugin):
         yield "Plugin0 sub2"
 
     def run(self, jarvis, s):
-        jarvis.say("++sub1++ " + s)
+        jarvis.say(f"++sub1++ {s}")
 
 
 class Plugin2(Plugin):

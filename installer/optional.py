@@ -157,16 +157,13 @@ PYAUTOGUI = {
 OPTIONAL_REQUIREMENTS = [PortAudio, RequestsSecurity, FFMPEG, ESPEAK, WKHTMLTOPDF, Fasttext, HTOP]
 
 
-if not sys.platform == "darwin":
+if sys.platform != "darwin":
     OPTIONAL_REQUIREMENTS += [NativeNotification]
 
 
 def get_guess(data):
     if sys.platform == "darwin":
-        if 'macos' in data:
-            return data['macos']
-        else:
-            return False
+        return data['macos'] if 'macos' in data else False
     elif platform.system().lower() == "linux":
         if 'linux' in data:
             data = data['linux']

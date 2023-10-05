@@ -40,17 +40,14 @@ class art_promps():
         i = 0
         length = len(htmlList)
         while i < length:
-            if "<a>" == htmlList[i]:
+            if htmlList[i] == "<a>":
                 aIndex = i
                 break
             i += 1
 
         # check first letter of string to see if vowel
         if length > 1:
-            if htmlList[aIndex + 1][0] in "aeiou":
-                htmlList[aIndex] = "an"
-            else:
-                htmlList[aIndex] = "a"
+            htmlList[aIndex] = "an" if htmlList[aIndex + 1][0] in "aeiou" else "a"
         else:
             htmlList[aIndex] = "a"
 

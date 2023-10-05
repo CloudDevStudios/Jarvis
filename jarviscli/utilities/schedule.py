@@ -22,7 +22,7 @@ class Scheduler:
 
     def cancel(self, schedule_id):
         if schedule_id not in self._events:
-            print("Error! No event {}".format(schedule_id))
+            print(f"Error! No event {schedule_id}")
             return
 
         self._events[schedule_id].cancel()

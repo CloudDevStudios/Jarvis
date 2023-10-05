@@ -49,11 +49,7 @@ class CaloriesMacrosPlugin:
             MALE_CONSTANT = 5
             FEMALE_CONSTANT = -161
 
-            if self._gender == 'M':
-                gender_constant = MALE_CONSTANT
-            else:
-                gender_constant = FEMALE_CONSTANT
-
+            gender_constant = MALE_CONSTANT if self._gender == 'M' else FEMALE_CONSTANT
             return (WEIGHT_FACTOR * self._weight + HEIGHT_FACTOR * self._height
                 + AGE_FACTOR * self._age + gender_constant)
 
@@ -79,10 +75,10 @@ class CaloriesMacrosPlugin:
             return round(rmr * ACTIVITY_FACTORS.get(self._activity_level))
 
         def _calc_daily_calorie_intake(self, tdee: int) -> int:
-            DAILY_CALORIC_DEFICIT = 500  # Results to ~0.5kg/week weight loss
             DAILY_CALORIC_SURPLUS = 500  # Results to ~0.5kg/week weight gain
 
             if self._goal == self.WEIGHT_LOSS:
+                DAILY_CALORIC_DEFICIT = 500  # Results to ~0.5kg/week weight loss
                 return tdee - DAILY_CALORIC_DEFICIT
             elif self._goal == self.WEIGHT_GAIN:
                 return tdee + DAILY_CALORIC_SURPLUS
@@ -189,7 +185,7 @@ class CaloriesMacrosPlugin:
         self.display_activity_levels(jarvis)
         input_msg = 'Choose your activity level (1-4): '
         bool_expression: Callable[[int], bool] = \
-            lambda activity_level: 1 <= activity_level <= 4
+                lambda activity_level: 1 <= activity_level <= 4
         error_msg = 'Oops! Invalid input. Try again (1-4)...'
         activity_level = self.read_input(
             jarvis, input_msg, bool_expression, error_msg)
@@ -204,19 +200,16 @@ class CaloriesMacrosPlugin:
             gender, age, height, weight, activity_level, goal)
         daily_calorie_intake = calorie_calculator.calc_daily_calorie_intake()
 
-        use_default_macro_ratios = self.read_use_default_macro_ratios(jarvis)
-        if use_default_macro_ratios:
+        if use_default_macro_ratios := self.read_use_default_macro_ratios(jarvis):
             macro_calculator = self.MacronutrientCalculator(daily_calorie_intake)
-            protein_g, carb_g, fat_g = macro_calculator.calc_macros()
         else:
             error_msg = "Oops! That was not a valid ratio. Try again..."
             protein_ratio, carb_ratio, fat_ratio = \
-                self.read_macro_ratios(jarvis, error_msg)
+                    self.read_macro_ratios(jarvis, error_msg)
 
             macro_calculator = self.MacronutrientCalculator(
                 daily_calorie_intake, protein_ratio, carb_ratio, fat_ratio)
-            protein_g, carb_g, fat_g = macro_calculator.calc_macros()
-
+        protein_g, carb_g, fat_g = macro_calculator.calc_macros()
         calorie_calculator.display_calorie_results(jarvis, daily_calorie_intake)
         macro_calculator.display_macros_results(jarvis, protein_g, carb_g, fat_g)
 
@@ -252,7 +245,7 @@ class CaloriesMacrosPlugin:
             jarvis.say(self.red(error_message))
 
     def validate_gender(self, gender: str) -> bool:
-        return (gender.upper() == "M" or gender.upper() == "F")
+        return gender.upper() in {"M", "F"}
 
     def read_input(self, jarvis, input_message: str,
             bool_expression: Callable[[int], bool], error_message: str) -> int:
@@ -266,9 +259,7 @@ class CaloriesMacrosPlugin:
             bool_expression: Callable[[int], bool]) -> bool:
         try:
             input = int(input)
-            if bool_expression(input):
-                return True
-            return False
+            return bool(bool_expression(input))
         except ValueError:
             return False
 
@@ -282,9 +273,7 @@ class CaloriesMacrosPlugin:
             'To change the default ratios type any other button\n'
             'Use the dafault macronutrient ratios: ')
 
-        if input.upper() == 'Y':
-            return True
-        return False
+        return input.upper() == 'Y'
 
     def read_macro_ratios(self, jarvis,
             error_message: str) -> Tuple[float, float, float]:
@@ -326,19 +315,17 @@ class CaloriesMacrosPlugin:
         PROT_RATIO_UPPER_BOUND = 0.35
         CARB_RATIO_LOWER_BOUND = 0.45
         CARB_RATIO_UPPER_BOUND = 0.65
-        FAT_RATIO_LOWER_BOUND = 0.2
-        FAT_RATIO_UPPER_BOUND = 0.35
-
         if not(PROT_RATIO_LOWER_BOUND <= protein_ratio <= PROT_RATIO_UPPER_BOUND):
             return False
 
-        if not(CARB_RATIO_LOWER_BOUND <= carb_ratio <= CARB_RATIO_UPPER_BOUND):
+        if not CARB_RATIO_LOWER_BOUND <= carb_ratio <= CARB_RATIO_UPPER_BOUND:
             return False
 
-        if not(FAT_RATIO_LOWER_BOUND <= fat_ratio <= FAT_RATIO_UPPER_BOUND):
-            return False
+        FAT_RATIO_LOWER_BOUND = 0.2
+        FAT_RATIO_UPPER_BOUND = 0.35
 
-        if protein_ratio + carb_ratio + fat_ratio != 1:
-            return False
-
-        return True
+        return (
+            False
+            if not (FAT_RATIO_LOWER_BOUND <= fat_ratio <= FAT_RATIO_UPPER_BOUND)
+            else protein_ratio + carb_ratio + fat_ratio == 1
+        )

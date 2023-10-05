@@ -79,13 +79,8 @@ def default(jarvis):
         srcs not in LANGUAGES) and (
         srcs not in SPECIAL_CASES) and (
             srcs not in LANGCODES):
-        if srcs in SPECIAL_CASES:
-            srcs = SPECIAL_CASES[srcs]
-        elif srcs in LANGCODES:
-            srcs = LANGCODES[srcs]
-        else:
-            jarvis.say("\nInvalid source language\nEnter again")
-            srcs = jarvis.input().lower()
+        jarvis.say("\nInvalid source language\nEnter again")
+        srcs = jarvis.input().lower()
 #   Get destination language
     jarvis.say('\nEnter destination language ')
     des = jarvis.input().lower().strip()
@@ -94,13 +89,8 @@ def default(jarvis):
         des not in LANGUAGES) and (
         des not in SPECIAL_CASES) and (
             des not in LANGCODES):
-        if des in SPECIAL_CASES:
-            des = SPECIAL_CASES[des]
-        elif des in LANGCODES:
-            des = LANGCODES[des]
-        else:
-            jarvis.say("\nInvalid destination language\nEnter again")
-            des = jarvis.input().lower()
+        jarvis.say("\nInvalid destination language\nEnter again")
+        des = jarvis.input().lower()
 
     jarvis.say('\nEnter text ')
     tex = jarvis.input()

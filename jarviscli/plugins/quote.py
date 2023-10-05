@@ -77,7 +77,7 @@ class Quote():
             break
 
     def contains_word(self, s, keyword):
-        return (' ' + keyword.lower()) in s or (keyword.capitalize()) in s
+        return f' {keyword.lower()}' in s or (keyword.capitalize()) in s
 
     def get_input(self, prompt, jarvis):
         """
@@ -92,9 +92,8 @@ class Quote():
                 jarvis.say("\nSorry, I didn't understand that.")
                 continue
 
-            if (response != 1) and (response != 2):
-                jarvis.say("\nSorry, your response is not valid.")
-                continue
-            else:
+            if response in {1, 2}:
                 break
+            else:
+                jarvis.say("\nSorry, your response is not valid.")
         return response

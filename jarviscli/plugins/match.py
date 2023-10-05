@@ -16,4 +16,4 @@ def match(jarvis, string):
     if file_name == "":
         jarvis.say("Invalid Filename")
     else:
-        system("grep '" + pattern + "' " + file_name)
+        system(f"grep '{pattern}' {file_name}")

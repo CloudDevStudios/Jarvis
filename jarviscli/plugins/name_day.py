@@ -50,7 +50,7 @@ class NameDay:
             self.get_location()
         while True:
             # main menu
-            self.jarvis.say("It appears you are in " + self.location, color=Fore.BLUE)
+            self.jarvis.say(f"It appears you are in {self.location}", color=Fore.BLUE)
             self.jarvis.say("1 See Today's name days")
             self.jarvis.say("2 See Tomorrow's name days")
             self.jarvis.say("3 Chose specific date")
@@ -105,7 +105,7 @@ class NameDay:
         if loc in self.countries.keys():
             self.location = loc
         else:
-            self.jarvis.say("It appears you are in " + loc)
+            self.jarvis.say(f"It appears you are in {loc}")
             self.jarvis.say("Your Country is not supported")
             self.jarvis.say("Please chose an other country")
             self.change_country()
@@ -119,9 +119,9 @@ class NameDay:
                          params={"country": country_code}).json()
         names = j["nameday"][country_code]
         if names != "n/a":
-            self.jarvis.say("Say some kind words to " + names)
+            self.jarvis.say(f"Say some kind words to {names}")
         else:
-            self.jarvis.say("No name days today in " + str(self.location))
+            self.jarvis.say(f"No name days today in {str(self.location)}")
 
     def tomorrow(self):
         """
@@ -132,9 +132,9 @@ class NameDay:
                          params={"country": country_code}).json()
         names = j["nameday"][country_code]
         if names != "n/a":
-            self.jarvis.say("Say some kind words to " + names)
+            self.jarvis.say(f"Say some kind words to {names}")
         else:
-            self.jarvis.say("No name days for tomorrow in " + str(self.location))
+            self.jarvis.say(f"No name days for tomorrow in {str(self.location)}")
 
     def specific_date(self):
         """
@@ -152,9 +152,9 @@ class NameDay:
                          params={"country": country_code, "day": day, "month": month}).json()
         names = j["nameday"][country_code]
         if names != "n/a":
-            self.jarvis.say("Say some kind words to " + names + " on " + day + "/" + month)
+            self.jarvis.say(f"Say some kind words to {names} on {day}/{month}")
         else:
-            self.jarvis.say("No name days at " + day + "/" + month + " in " + self.location)
+            self.jarvis.say(f"No name days at {day}/{month} in {self.location}")
 
     def specific_name(self):
         """
@@ -172,9 +172,9 @@ class NameDay:
             for s in j["0"]:
                 date = str(s["day"]) + "/" + str(s["month"]) + " "
                 dates += date.strip()
-            self.jarvis.say("Say some kind words to " + name + " at " + dates)
+            self.jarvis.say(f"Say some kind words to {name} at {dates}")
         else:
-            self.jarvis.say("No name days found for " + name)
+            self.jarvis.say(f"No name days found for {name}")
 
     def change_country(self):
         """
@@ -182,8 +182,8 @@ class NameDay:
         """
         self.jarvis.say("Select your country number from the list below:")
         for i, key in enumerate(self.countries.keys(), start=1):
-            self.jarvis.say(str(i) + " " + key)
-        self.jarvis.say(str(len(self.countries) + 1) + " Cancel")
+            self.jarvis.say(f"{str(i)} {key}")
+        self.jarvis.say(f"{str(len(self.countries) + 1)} Cancel")
 
         while True:
             country = int(self.jarvis.input("Select your country number: "))
@@ -205,18 +205,19 @@ class NameDay:
         month = int(month)
         m31 = [1, 3, 5, 7, 8, 10, 12]
         m30 = [4, 6, 9, 11]
-        if month in m31:
-            if 0 > day or day > 31:
-                self.jarvis.say("Please enter a valid date")
-                raise ValueError
-        elif month in m30:
-            if 0 > day or day > 30:
-                self.jarvis.say("Please enter a valid date")
-                raise ValueError
-        elif month == 2:
-            if 0 > day or day > 29:
-                self.jarvis.say("Please enter a valid date")
-                raise ValueError
-        else:
+        if (
+            month in m31
+            and (day < 0 or day > 31)
+            or month not in m31
+            and month in m30
+            and (day < 0 or day > 30)
+            or month not in m31
+            and month not in m30
+            and month == 2
+            and (day < 0 or day > 29)
+            or month not in m31
+            and month not in m30
+            and month != 2
+        ):
             self.jarvis.say("Please enter a valid date")
             raise ValueError

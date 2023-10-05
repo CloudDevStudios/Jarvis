@@ -11,9 +11,7 @@ MACOS = 'darwin'
 WIN = 'win32'
 IS_MACOS = sys.platform == MACOS
 IS_WIN = sys.platform == WIN
-WIN_VER = None
-if IS_WIN:
-    WIN_VER = win32_ver()[0]
+WIN_VER = win32_ver()[0] if IS_WIN else None
 
 
 def print_say(text, self, color=""):
@@ -87,5 +85,4 @@ def get_parent_directory(path):
     """
     path = path.split('/')
     path.pop()
-    destination = '/'.join(path)
-    return destination
+    return '/'.join(path)

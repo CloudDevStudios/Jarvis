@@ -1,4 +1,5 @@
 """Plugin that creates templated workspace folders for various languages."""
+
 import git
 from distutils.dir_util import copy_tree
 import os
@@ -8,7 +9,7 @@ from colorama import Fore
 from plugin import plugin
 
 DATA_PATH = os.path.abspath(os.path.dirname(__file__))
-DATA_PATH = DATA_PATH[:-8] + '/data/workspaces'
+DATA_PATH = f'{DATA_PATH[:-8]}/data/workspaces'
 
 
 @plugin("workspace")
@@ -32,6 +33,6 @@ def generate_workspace(jarvis, s):
         "Would you like to include a starter file and build script for" +
         "your desired language? (c++/java/none)\n", Fore.BLUE)
     if to_template == "c++":
-        copy_tree(DATA_PATH + "/cpp_template", str(path))
+        copy_tree(f"{DATA_PATH}/cpp_template", str(path))
     elif to_template == "java":
-        copy_tree(DATA_PATH + "/java_template", str(path))
+        copy_tree(f"{DATA_PATH}/java_template", str(path))

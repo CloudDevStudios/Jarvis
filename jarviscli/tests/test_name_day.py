@@ -59,39 +59,58 @@ class TestNameDay(PluginTest):
         request = requests.get("https://nameday.abalin.net/api/V1/today", params={"country": "gr"})
         request_body = request.json()["nameday"]["gr"]
         if request_body != "n/a":
-            self.assertEqual(self.history_say().last_text(), "Say some kind words to " + request_body)
+            self.assertEqual(
+                self.history_say().last_text(),
+                f"Say some kind words to {request_body}",
+            )
         else:
-            self.assertEqual(self.history_say().last_text(),
-                             "No name days today in " + str(self.plugin.location))
+            self.assertEqual(
+                self.history_say().last_text(),
+                f"No name days today in {str(self.plugin.location)}",
+            )
 
     def test_tomorrow(self):
         self.plugin.tomorrow()
         request = requests.get("https://nameday.abalin.net/api/V1/tomorrow", params={"country": "gr"})
         request_body = request.json()["nameday"]["gr"]
         if request_body != "n/a":
-            self.assertEqual(self.history_say().last_text(), "Say some kind words to " + request_body)
+            self.assertEqual(
+                self.history_say().last_text(),
+                f"Say some kind words to {request_body}",
+            )
         else:
-            self.assertEqual(self.history_say().last_text(),
-                             "No name days for tomorrow in " + str(self.plugin.location))
+            self.assertEqual(
+                self.history_say().last_text(),
+                f"No name days for tomorrow in {str(self.plugin.location)}",
+            )
 
     def test_specific_date(self):
-        day = 15
         month = 11
-        self.queue_input(str(day) + "/" + str(month))
+        day = 15
+        self.queue_input(f"{day}/{month}")
         self.plugin.specific_date()
         request = requests.get("https://nameday.abalin.net/api/V1/getdate", params={"day": day, "month": month})
         request_body = request.json()["nameday"]["gr"]
         if request_body != "n/a":
-            self.assertEqual(self.history_say().last_text(), "Say some kind words to "
-                             + request_body + " on " + str(day) + "/" + str(month))
+            self.assertEqual(
+                self.history_say().last_text(),
+                f"Say some kind words to {request_body} on {day}/{month}",
+            )
         else:
-            self.assertEqual(self.history_say().last_text(),
-                             "No name days at " + str(day) + "/" + str(month) + " in " + self.plugin.location)
+            self.assertEqual(
+                self.history_say().last_text(),
+                f"No name days at {day}/{month} in {self.plugin.location}",
+            )
 
     def test_specific_name(self):
         name = "Alexios"
         name_day_of_name = "17/3"
         self.queue_input(name)
         self.plugin.specific_name()
-        self.assertIn(self.history_say().last_text(),
-                      ("Say some kind words to " + name + " at " + name_day_of_name, "No name days found for " + name))
+        self.assertIn(
+            self.history_say().last_text(),
+            (
+                f"Say some kind words to {name} at {name_day_of_name}",
+                f"No name days found for {name}",
+            ),
+        )

@@ -25,18 +25,17 @@ class ParserTest(unittest.TestCase):
     def test_check_ram(self):
         user_input = "It would be cool if you could check my computers ram"
         parsed_input = self.jarvis.parse_input(user_input).split()
-        self.assertEqual(["check"], parsed_input[0:1])
+        self.assertEqual(["check"], parsed_input[:1])
 
     def test_say(self):
         user_input = "Can you say I'm a robot"
         parsed_input = self.jarvis.parse_input(user_input).split()
-        self.assertEqual(["say", "i'm", "a", "robot"], parsed_input[0:])
+        self.assertEqual(["say", "i'm", "a", "robot"], parsed_input[:])
 
     def test_near(self):
         user_input = "charities near Valencia"
         parsed_input = self.jarvis.parse_input(user_input).split()
-        self.assertEqual(
-            ["near", "charities", "|", "valencia"], parsed_input[0:])
+        self.assertEqual(["near", "charities", "|", "valencia"], parsed_input[:])
 
 
 if __name__ == '__main__':

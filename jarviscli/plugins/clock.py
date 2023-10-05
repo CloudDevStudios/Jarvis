@@ -43,5 +43,5 @@ def timer(jarvis, s):
     if k[0] == '':
         jarvis.say("Please specify duration")
         return
-    timer_cmd = "python -m termdown " + k[0]
+    timer_cmd = f"python -m termdown {k[0]}"
     system(timer_cmd)

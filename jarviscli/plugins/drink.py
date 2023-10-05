@@ -9,7 +9,7 @@ import json
 @plugin("drink")
 def cocktail(jarvis, s):
     cocktail = input("Enter a drink: ").strip()
-    url = 'https://www.thecocktaildb.com/api/json/v1/1/search.php?s=' + cocktail
+    url = f'https://www.thecocktaildb.com/api/json/v1/1/search.php?s={cocktail}'
     r = requests.get(url)
     json_data = json.loads(r.content)
     try:
@@ -17,9 +17,9 @@ def cocktail(jarvis, s):
         cocktail_name = json_data['drinks'][0]['strDrink']
         ingredients_str = 'Ingredients: \n'
         i=1
-        temp = json_data['drinks'][0]['strIngredient' + str(i)]
+        temp = json_data['drinks'][0][f'strIngredient{i}']
         while True:
-            temp = json_data['drinks'][0]['strIngredient' + str(i)]
+            temp = json_data['drinks'][0][f'strIngredient{str(i)}']
             if not temp:
                 break
             ingredients_str += temp + '\n'

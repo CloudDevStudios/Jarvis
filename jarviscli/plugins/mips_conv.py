@@ -31,14 +31,14 @@ class MipsConverter:
     """
 
     def __call__(self, jarvis, s):
-        if (s != ""):
-            if (len(s) == 8 and s.find(" ") == -1):
-                self.hexToAssembly(s, jarvis)
-            else:
-                self.assemblyToHex(s, jarvis)
-        else:
+        if s == "":
             jarvis.say(
                 "please enter a valid Assembly statement or a Machine code statement in Hex.")
+
+        elif (len(s) == 8 and s.find(" ") == -1):
+            self.hexToAssembly(s, jarvis)
+        else:
+            self.assemblyToHex(s, jarvis)
 
     def __init__(self):
         # all lists which hold necessary info to interpret the command
@@ -56,133 +56,126 @@ class MipsConverter:
         self.__regName = []
         self.__regCode = []
 
-        # populating the lists with info from the files
-        commands = open(os.path.join(FILE_PATH, "../data/mips_coms.txt"), 'r')
+        with open(os.path.join(FILE_PATH, "../data/mips_coms.txt"), 'r') as commands:
+            for line in commands:
+                line = ''.join(line.split())
 
-        for line in commands:
-            line = ''.join(line.split())
+                self.__com.append(line[:line.find('|')])
+                line = line[line.find('|') + 1:]
 
-            self.__com.append(line[0:line.find('|')])
-            line = line[line.find('|') + 1:]
+                self.__form.append(line[:line.find('|')])
+                line = line[line.find('|') + 1:]
 
-            self.__form.append(line[0:line.find('|')])
-            line = line[line.find('|') + 1:]
+                self.__inType.append(line[:line.find('|')])
+                line = line[line.find('|') + 1:]
 
-            self.__inType.append(line[0:line.find('|')])
-            line = line[line.find('|') + 1:]
+                self.__op.append(line[:line.find('|')])
+                line = line[line.find('|') + 1:]
 
-            self.__op.append(line[0:line.find('|')])
-            line = line[line.find('|') + 1:]
+                self.__rs.append(line[:line.find('|')])
+                line = line[line.find('|') + 1:]
 
-            self.__rs.append(line[0:line.find('|')])
-            line = line[line.find('|') + 1:]
+                self.__rt.append(line[:line.find('|')])
+                line = line[line.find('|') + 1:]
 
-            self.__rt.append(line[0:line.find('|')])
-            line = line[line.find('|') + 1:]
+                self.__rd.append(line[:line.find('|')])
+                line = line[line.find('|') + 1:]
 
-            self.__rd.append(line[0:line.find('|')])
-            line = line[line.find('|') + 1:]
+                self.__shamt.append(line[:line.find('|')])
+                line = line[line.find('|') + 1:]
 
-            self.__shamt.append(line[0:line.find('|')])
-            line = line[line.find('|') + 1:]
+                self.__func.append(line[:line.find('|')])
+                line = line[line.find('|') + 1:]
 
-            self.__func.append(line[0:line.find('|')])
-            line = line[line.find('|') + 1:]
+                self.__imm.append(line)
 
-            self.__imm.append(line)
+        with open(os.path.join(FILE_PATH, "../data/mips_regs.txt"), 'r') as regs:
+            for line in regs:
+                line = ''.join(line.split())
 
-        commands.close()
+                self.__regName.append(line[:line.find('|')])
+                line = line[line.find('|') + 1:]
 
-        regs = open(os.path.join(FILE_PATH, "../data/mips_regs.txt"), 'r')
-
-        for line in regs:
-            line = ''.join(line.split())
-
-            self.__regName.append(line[0:line.find('|')])
-            line = line[line.find('|') + 1:]
-
-            self.__regCode.append(line)
-
-        regs.close()
+                self.__regCode.append(line)
 
     # To convert Hexadecimal to Binary
     def __hexToBin(self, myHex):
         binOfHex = ""
         for element in myHex:
             element = element.upper()
-            if (element == "F"):
-                binOfHex = binOfHex + "1111"
-            elif (element == "E"):
-                binOfHex = binOfHex + "1110"
-            elif (element == "D"):
-                binOfHex = binOfHex + "1101"
-            elif (element == "C"):
-                binOfHex = binOfHex + "1100"
-            elif (element == "B"):
-                binOfHex = binOfHex + "1011"
-            elif (element == "A"):
-                binOfHex = binOfHex + "1010"
-            elif (element == "9"):
-                binOfHex = binOfHex + "1001"
-            elif (element == "8"):
-                binOfHex = binOfHex + "1000"
-            elif (element == "7"):
-                binOfHex = binOfHex + "0111"
-            elif (element == "6"):
-                binOfHex = binOfHex + "0110"
-            elif (element == "5"):
-                binOfHex = binOfHex + "0101"
-            elif (element == "4"):
-                binOfHex = binOfHex + "0100"
-            elif (element == "3"):
-                binOfHex = binOfHex + "0011"
-            elif (element == "2"):
-                binOfHex = binOfHex + "0010"
-            elif (element == "1"):
-                binOfHex = binOfHex + "0001"
-            elif (element == "0"):
-                binOfHex = binOfHex + "0000"
+            if element == "0":
+                binOfHex = f"{binOfHex}0000"
 
+            elif element == "1":
+                binOfHex = f"{binOfHex}0001"
+            elif element == "2":
+                binOfHex = f"{binOfHex}0010"
+            elif element == "3":
+                binOfHex = f"{binOfHex}0011"
+            elif element == "4":
+                binOfHex = f"{binOfHex}0100"
+            elif element == "5":
+                binOfHex = f"{binOfHex}0101"
+            elif element == "6":
+                binOfHex = f"{binOfHex}0110"
+            elif element == "7":
+                binOfHex = f"{binOfHex}0111"
+            elif element == "8":
+                binOfHex = f"{binOfHex}1000"
+            elif element == "9":
+                binOfHex = f"{binOfHex}1001"
+            elif element == "A":
+                binOfHex = f"{binOfHex}1010"
+            elif element == "B":
+                binOfHex = f"{binOfHex}1011"
+            elif element == "C":
+                binOfHex = f"{binOfHex}1100"
+            elif element == "D":
+                binOfHex = f"{binOfHex}1101"
+            elif element == "E":
+                binOfHex = f"{binOfHex}1110"
+            elif element == "F":
+                binOfHex = f"{binOfHex}1111"
         return binOfHex
 
     # To convert binary to hexadecimal
     def __binToHex(self, myBin):
         hexOfBin = ""
-        for i in range(int(len(myBin) / 4)):
+        for i in range(len(myBin) // 4):
             newBin = myBin[i * 4:4 + i * 4]
 
-            if (newBin == "1111"):
-                hexOfBin = hexOfBin + "F"
-            elif (newBin == "1110"):
-                hexOfBin = hexOfBin + "E"
-            elif (newBin == "1101"):
-                hexOfBin = hexOfBin + "D"
-            elif (newBin == "1100"):
-                hexOfBin = hexOfBin + "C"
-            elif (newBin == "1011"):
-                hexOfBin = hexOfBin + "B"
-            elif (newBin == "1010"):
-                hexOfBin = hexOfBin + "A"
-            elif (newBin == "1001"):
-                hexOfBin = hexOfBin + "9"
-            elif (newBin == "1000"):
-                hexOfBin = hexOfBin + "8"
-            elif (newBin == "0111"):
-                hexOfBin = hexOfBin + "7"
-            elif (newBin == "0110"):
-                hexOfBin = hexOfBin + "6"
-            elif (newBin == "0101"):
-                hexOfBin = hexOfBin + "5"
-            elif (newBin == "0100"):
-                hexOfBin = hexOfBin + "4"
-            elif (newBin == "0011"):
-                hexOfBin = hexOfBin + "3"
-            elif (newBin == "0010"):
-                hexOfBin = hexOfBin + "2"
-            elif (newBin == "0001"):
-                hexOfBin = hexOfBin + "1"
-            elif (newBin == "0000"):
-                hexOfBin = hexOfBin + "0"
+            if newBin == "0000":
+                hexOfBin = f"{hexOfBin}0"
+            elif newBin == "0001":
+                hexOfBin = f"{hexOfBin}1"
+            elif newBin == "0010":
+                hexOfBin = f"{hexOfBin}2"
+            elif newBin == "0011":
+                hexOfBin = f"{hexOfBin}3"
+            elif newBin == "0100":
+                hexOfBin = f"{hexOfBin}4"
+            elif newBin == "0101":
+                hexOfBin = f"{hexOfBin}5"
+            elif newBin == "0110":
+                hexOfBin = f"{hexOfBin}6"
+            elif newBin == "0111":
+                hexOfBin = f"{hexOfBin}7"
+            elif newBin == "1000":
+                hexOfBin = f"{hexOfBin}8"
+            elif newBin == "1001":
+                hexOfBin = f"{hexOfBin}9"
+            elif newBin == "1010":
+                hexOfBin = f"{hexOfBin}A"
+            elif newBin == "1011":
+                hexOfBin = f"{hexOfBin}B"
+            elif newBin == "1100":
+                hexOfBin = f"{hexOfBin}C"
+            elif newBin == "1101":
+                hexOfBin = f"{hexOfBin}D"
+            elif newBin == "1110":
+                hexOfBin = f"{hexOfBin}E"
+            elif newBin == "1111":
+                hexOfBin = f"{hexOfBin}F"
         return hexOfBin
 
     # convert decimal to binary
@@ -190,25 +183,25 @@ class MipsConverter:
         n = 0
         binOfDec = ""
         while myDec > 2**n:
-            n = n + 1
+            n += 1
 
         if (myDec < 2**n) & (myDec != 0):
-            n = n - 1
+            n -= 1
 
         while n >= 0:
             if (myDec >= 2**n):
                 myDec = myDec - 2**n
-                binOfDec = binOfDec + "1"
+                binOfDec = f"{binOfDec}1"
             else:
-                binOfDec = binOfDec + "0"
-            n = n - 1
+                binOfDec = f"{binOfDec}0"
+            n -= 1
 
         return binOfDec
 
     # put the binary in multiples of 4
     def __nibbleEq(self, myBin):
-        while (int(len(myBin) / 4) * 4 != len(myBin)):
-            myBin = "0" + myBin
+        while len(myBin) // 4 * 4 != len(myBin):
+            myBin = f"0{myBin}"
         return myBin
 
     # find the register from the given binary code
@@ -221,7 +214,7 @@ class MipsConverter:
             if (regCode[regCntr] == regR):
                 flag = True
                 break
-            regCntr = regCntr + 1
+            regCntr += 1
 
         if (flag is False):
             jarvis.say("Instruction is syntactically incorrect")
@@ -240,7 +233,7 @@ class MipsConverter:
             if (regName[regCntr] == regR):
                 flag = True
                 break
-            regCntr = regCntr + 1
+            regCntr += 1
 
         if (flag is False):
             jarvis.say("Instruction is syntactically incorrect")
@@ -254,7 +247,7 @@ class MipsConverter:
         temp = assembly[assembly.find(" ") + 1:]
         regR = temp
         if (temp.find(" ") != -1):
-            regR = temp[0: temp.find(" ") + 1]
+            regR = temp[:temp.find(" ") + 1]
         regR = regR.strip()
         return regR
 
@@ -264,16 +257,17 @@ class MipsConverter:
         temp = temp[temp.find(" ") + 1:]
         regR = temp
         if (temp.rfind(" ") != -1):
-            regR = temp[0: temp.rfind(" ") + 1]
+            regR = temp[:temp.rfind(" ") + 1]
         regR = regR.strip()
         return regR
 
     # find the last register given in the assembly command
     def __getRegLast(self, assembly):
-        if (assembly.rfind(" ") != -1):
-            return assembly[assembly.rfind(" ") + 1:]
-        else:
-            return ""
+        return (
+            assembly[assembly.rfind(" ") + 1 :]
+            if (assembly.rfind(" ") != -1)
+            else ""
+        )
 
     # Change assembly to Hex
     def assemblyToHex(self, assembly, jarvis):

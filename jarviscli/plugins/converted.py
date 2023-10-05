@@ -95,7 +95,7 @@ def do_update(jarvis, s):
     """
     location = jarvis.get_data('city')
     loc_str = str(location)
-    jarvis.say("Your current location is set to " + loc_str)
+    jarvis.say(f"Your current location is set to {loc_str}")
     jarvis.say("What is your new location?")
     i = jarvis.input()
     jarvis.update_data('city', i)

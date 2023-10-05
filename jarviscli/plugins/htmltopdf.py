@@ -52,6 +52,6 @@ class htmltopdf_url:
             jarvis.say("please make sur your url is valid")
         else:
             try:
-                pdfkit.from_url(s, s + '.pdf')
+                pdfkit.from_url(s, f'{s}.pdf')
             except IOError as err:
                 jarvis.say("IO error: {0}".format(err) + "\nMake sure your URL is valid and that you have access to the internet")

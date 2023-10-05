@@ -18,8 +18,7 @@ class Roll():
     def __call__(self, jarvis, s):
         config = self._dice_parse(s)
 
-        error = self._dice_is_error_in_config(config)
-        if error:
+        if error := self._dice_is_error_in_config(config):
             jarvis.say(error, Fore.RED)
             return
 
@@ -53,14 +52,14 @@ class Roll():
                 continue
             prefix_number = parse_result[1]
 
-            if word_current == "edge" or word_current == "edges":
+            if word_current in ["edge", "edges"]:
                 edges = prefix_number
-
-            if word_current == "times":
-                repeat = prefix_number
 
             if word_current == "dices":
                 howmany = prefix_number
+
+            elif word_current == "times":
+                repeat = prefix_number
 
             prefix += " "
             prefix += word_current
@@ -76,16 +75,13 @@ class Roll():
         if config["howmany"] == 0:
             return "No dice to roll?"
         if config["howmany"] < 0:
-            return "Rolling {} dices does not really make sense ;).".format(
-                config["howmany"])
+            return f'Rolling {config["howmany"]} dices does not really make sense ;).'
         if config["repeat"] == 0:
             return "Roll 0 howmany? Finish!"
         if config["repeat"] < 0:
-            return "Doing something {} does not really make sense ;).".format(
-                config["repeat"])
+            return f'Doing something {config["repeat"]} does not really make sense ;).'
         if config["edges"] <= 1:
-            return "A dice with {} edges does not really make sense ;).".format(
-                config["edges"])
+            return f'A dice with {config["edges"]} edges does not really make sense ;).'
 
         return False
 

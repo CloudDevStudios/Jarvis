@@ -53,7 +53,7 @@ class MusicRecognition:
             user_input = jarvis.input('Your choice: ')
             user_input = user_input.lower()
 
-            if user_input == 'q' or user_input == 'quit' or user_input == '3':
+            if user_input in ['q', 'quit', '3']:
                 jarvis.say("See you next time :D", Fore.CYAN)
                 break
 
@@ -126,7 +126,7 @@ class MusicRecognition:
 
         out = await self.shazam.recognize_song(self.sound_recorded.name)
 
-        if not 'track' in out:
+        if 'track' not in out:
             jarvis.say('No match found', Fore.RED)
         else:
             jarvis.say('Match found:', Fore.GREEN)
@@ -163,7 +163,7 @@ class MusicRecognition:
             user_input = jarvis.input('Your choice: ')
             user_input = user_input.lower()
 
-            if user_input == 'q' or user_input == 'quit' or user_input == '4':
+            if user_input in ['q', 'quit', '4']:
                 break
 
             # To select input device

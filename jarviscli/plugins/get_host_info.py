@@ -7,25 +7,22 @@ from plugin import plugin, require, UNIX
 
 # https://pypi.org/project/nslookup/
 def ns_lookup(host):
-    ping_str = 'nslookup ' + host
+    ping_str = f'nslookup {host}'
     stream = popen(ping_str)
-    output = stream.read()
-    return output
+    return stream.read()
 
 
 def whois_lookup(host):
     try:
-        domain = query(host)
-        return domain
+        return query(host)
     except exceptions.UnknownTld:
         return None
 
 
 def ping(host):
-    ping_str = 'ping ' + host + ' -c1'
+    ping_str = f'ping {host} -c1'
     stream = popen(ping_str)
-    output = stream.read()
-    return output
+    return stream.read()
 
 
 # cutom regex to extract (sub)domain from string and prevents cmd injection
@@ -50,9 +47,9 @@ def get_host_info(jarvis, s):
     green = "\x1b[1;32m"
     white = "\x1b[1;37m"
 
-    host = input(white + 'Enter Domain Name or IP Address: ')
+    host = input(f'{white}Enter Domain Name or IP Address: ')
     if host is not None:
-        if host.lower() == "q" or host.lower() == "quit":
+        if host.lower() in ["q", "quit"]:
             return None
 
     host = sanitize_host(host, jarvis, s)
@@ -65,12 +62,12 @@ def get_host_info(jarvis, s):
     jarvis.say(response)
 
     # whois lookup
-    jarvis.say(green + "whois Lookup on " + host + ":" + white)
+    jarvis.say(f"{green}whois Lookup on {host}:{white}")
     response = whois_lookup(host)
     if response:
         pprint(response.__dict__)
     else:
-        jarvis.say("Could not run whois lookup on host " + host)
+        jarvis.say(f"Could not run whois lookup on host {host}")
 
     # ping host
     jarvis.say("\n" + green + "ping " + host + ":" + white)

@@ -33,7 +33,7 @@ class country_info:
             elif country == 'exit':
                 return
             else:
-                url = "https://restcountries.eu/rest/v2/name/%s?fullText=true" % country
+                url = f"https://restcountries.eu/rest/v2/name/{country}?fullText=true"
                 r = requests.get(url)
                 if isinstance(r.json(), dict):
                     jarvis.say("Country not found.")
@@ -50,12 +50,12 @@ class country_info:
         time_zone = country_fetch[0]["timezones"][0]
 
         print()
-        jarvis.say("Capital: " + capital)
-        jarvis.say("Calling Code: " + calling_code)
-        jarvis.say("Currency: " + currency)
-        jarvis.say("Currency Symbol: " + currency_symbol)
-        jarvis.say("Population: " + str(population))
-        jarvis.say("Region: " + region)
-        jarvis.say("Time Zone: " + time_zone)
+        jarvis.say(f"Capital: {capital}")
+        jarvis.say(f"Calling Code: {calling_code}")
+        jarvis.say(f"Currency: {currency}")
+        jarvis.say(f"Currency Symbol: {currency_symbol}")
+        jarvis.say(f"Population: {str(population)}")
+        jarvis.say(f"Region: {region}")
+        jarvis.say(f"Time Zone: {time_zone}")
 
         return

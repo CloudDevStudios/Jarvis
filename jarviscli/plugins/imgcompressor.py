@@ -36,7 +36,7 @@ class ImageCompressor:
             user_input = jarvis.input('Your choice: ')
             user_input = user_input.lower()
 
-            if user_input == 'q' or user_input == 'quit' or user_input == '3':
+            if user_input in ['q', 'quit', '3']:
                 jarvis.say("See you next time :D", Fore.CYAN)
                 break
 

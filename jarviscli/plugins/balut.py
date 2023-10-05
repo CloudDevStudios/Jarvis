@@ -25,12 +25,9 @@ def calc_same_face_points(fields: List[int], face: int) -> int:
     was at least 13 occurrences of the specified dice face in the total rolls
     that was settled in that category.
     '''
-    SAME_FACE_POINTS = 2
     MIN_REQUIRED_OCCURRENCES = 13
 
-    if sum(fields) >= face * MIN_REQUIRED_OCCURRENCES:
-        return SAME_FACE_POINTS
-    return 0
+    return 2 if sum(fields) >= face * MIN_REQUIRED_OCCURRENCES else 0
 
 
 def calc_straight_score(hand: List[int]) -> int:
@@ -44,7 +41,7 @@ def calc_straight_score(hand: List[int]) -> int:
     large_straight = [2, 3, 4, 5, 6]
 
     sorted_hand = sorted(hand)
-    if sorted_hand == small_straight or sorted_hand == large_straight:
+    if sorted_hand in [small_straight, large_straight]:
         return sum(sorted_hand)
     return 0
 
@@ -55,11 +52,7 @@ def calc_straight_points(fields: List[int]) -> int:
     all of its 4 fields in the scoresheet should contain straights, which is
     equivalent to all of the 4 fields having score.
     '''
-    STRAIGHT_POINTS = 4
-
-    if 0 not in fields:
-        return STRAIGHT_POINTS
-    return 0
+    return 4 if 0 not in fields else 0
 
 
 def calc_full_house_score(hand: List[int]) -> int:
@@ -83,11 +76,7 @@ def calc_full_house_points(fields: List[int]) -> int:
     all of its 4 fields in the scoresheet should contain full houses, which
     is equivalent to all of the 4 fields having score.
     '''
-    FULL_HOUSE_POINTS = 3
-
-    if 0 not in fields:
-        return FULL_HOUSE_POINTS
-    return 0
+    return 3 if 0 not in fields else 0
 
 
 def calc_choice_score(hand: List[int]) -> int:
@@ -104,12 +93,9 @@ def calc_choice_points(fields: List[int]) -> int:
     the total score of the 4 fields in the scoresheet should be greater than
     or equal to 100.
     '''
-    CHOICE_POINTS = 2
     MIN_REQUIRED_SCORE = 100
 
-    if sum(fields) >= MIN_REQUIRED_SCORE:
-        return CHOICE_POINTS
-    return 0
+    return 2 if sum(fields) >= MIN_REQUIRED_SCORE else 0
 
 
 def calc_balut_score(hand: List[int]) -> int:
@@ -118,11 +104,7 @@ def calc_balut_score(hand: List[int]) -> int:
     faces in the hand plus 20, but only if the hand contains a Balut (five of
     a kind), otherwise the score is 0.
     '''
-    BALUT_BASE_SCORE = 20
-
-    if len(set(hand)) == 1:
-        return BALUT_BASE_SCORE + sum(hand)
-    return 0
+    return 20 + sum(hand) if len(set(hand)) == 1 else 0
 
 
 def calc_balut_points(fields: List[int]) -> int:
@@ -133,7 +115,7 @@ def calc_balut_points(fields: List[int]) -> int:
     '''
     POINTS_PER_BALUT = 2
 
-    return sum([POINTS_PER_BALUT for field in fields if field != 0])
+    return sum(POINTS_PER_BALUT for field in fields if field != 0)
 
 
 class Category:
@@ -186,12 +168,12 @@ class Scoresheet:
         while True:
             try:
                 category = \
-                    int(input('Select the category to settle the score (1-7): '))
+                        int(input('Select the category to settle the score (1-7): '))
 
                 if self._validate_category(category):
                     return category
             except InvalidCategoryValueError as error:
-                print(str(error))
+                print(error)
             except ValueError:
                 print('Oops! Category should be an integer. Try again...\n')
 
@@ -403,7 +385,7 @@ class Balut:
                     self.roll_dice(dice_to_roll)
                 return
             except InvalidDiceValueError as error:
-                print(str(error))
+                print(error)
             except ValueError as error:
                 print('Oops! Dices should be integers. Try again...\n')
 

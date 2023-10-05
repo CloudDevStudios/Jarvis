@@ -4,21 +4,18 @@ from plugin import plugin
 numberRows = 6
 numberColumns = 7
 numToWin = 4
-GameBoard = [[0] * numberColumns for j in range(numberRows)]
+GameBoard = [[0] * numberColumns for _ in range(numberRows)]
 
 
 def restartBoard():
     for i in range(numberRows):
         for j in range(numberColumns):
-            GameBoard[i][j] = str(' ')
+            GameBoard[i][j] = ' '
 
 
 # Function to check if the column is open
 def checkIfFree(c):
-    if whatsAtPos(0, c) == ' ':
-        return True
-    else:
-        return False
+    return whatsAtPos(0, c) == ' '
 
 
 # Function that calls all win conditions
@@ -75,12 +72,10 @@ def checkHorizWin(r, c, p):
         else:
             break
 
-    # Add left and right together to check if numToWin was reached
-    if leftCounter + rightCounter >= numToWin:
-        print("Congrats, player ", p, " you win horizontally!\n")
-        return True
-    else:
+    if leftCounter + rightCounter < numToWin:
         return False
+    print("Congrats, player ", p, " you win horizontally!\n")
+    return True
 
 
 def checkVertWin(r, c, p):
@@ -170,10 +165,7 @@ def checkDiagWin(r, c, p):
 
 # Function to return value of gameboard location
 def whatsAtPos(r, c):
-    if not GameBoard[r][c]:
-        return ' '
-    else:
-        return str(GameBoard[r][c])
+    return ' ' if not GameBoard[r][c] else str(GameBoard[r][c])
 
 
 # Check to see if players tied
@@ -196,7 +188,7 @@ def printBoard():
     # Create column headers (1-7)
     for i in range(startIndex, numberColumns, 1):
         ss += '|'
-        ss = ss + str(i + 1)
+        ss += str(i + 1)
     ss += '|'
     ss += '\n'
 
@@ -206,7 +198,7 @@ def printBoard():
     for i in range(startIndex, numberRows, 1):
         for j in range(startIndex_j, numberColumns, 1):
             ss += '|'
-            ss = ss + str(whatsAtPos(i, j))
+            ss += str(whatsAtPos(i, j))
         ss += '|'
         ss += '\n'
 
@@ -228,23 +220,17 @@ def game(jarvis, s):
 
         printBoard()
         while True:
-            column = int(input('Pick a column (1-7):\n'))
-            column -= 1
-
+            column = int(input('Pick a column (1-7):\n')) - 1
             # Make sure column is inbounds
             while column < 0 or column > numberColumns:
                 print('Out of bounds. Pick another column.')
                 printBoard()
-                column = int(input('Pick a column (1-7):\n'))
-                column -= 1
-
+                column = int(input('Pick a column (1-7):\n')) - 1
             # Make sure column is empty
             while not checkIfFree(column):
                 print('Column is full. Pick another.\n')
                 printBoard()
-                column = int(input('Pick a column (1-7):\n'))
-                column -= 1
-
+                column = int(input('Pick a column (1-7):\n')) - 1
             # get the players turn and place token now that conditions are met
             if playerTracker % 2 == 0:
                 placeToken("X", column)
@@ -268,7 +254,7 @@ def game(jarvis, s):
         playAgainFlag = input('Would you like the play again? (Y/N)\n')
         playAgainFlag = playAgainFlag.strip()
         playAgainFlag = playAgainFlag.lower()
-        while playAgainFlag != 'n' and playAgainFlag != 'y':
+        while playAgainFlag not in ['n', 'y']:
             playAgainFlag = input('Please enter Y or N\n')
             playAgainFlag = playAgainFlag.strip()
             playAgainFlag = playAgainFlag.lower()

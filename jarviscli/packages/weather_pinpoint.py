@@ -11,7 +11,7 @@ def main(memory, self, s):
         print_say("It appears you are in {CITY} Is this correct? (y/n)"
                   .format(CITY=city), self, Fore.RED)
         i = input()
-        if i == 'n' or i == 'no':
+        if i in ['n', 'no']:
             print_say("Enter Name of city: ", self)
             i = input()
             city = i
@@ -33,13 +33,13 @@ def main(memory, self, s):
             print_say("Do you want weather for {CITY} instead? (y/n)"
                       .format(CITY=city), self, Fore.RED)
             i = input()
-            if i == 'y' or i == 'yes':
+            if i in ['y', 'yes']:
                 try:
                     print_say(
                         "Would you like to set {CITY} as your new location? (y/n)" .format(
                             CITY=city), self, Fore.RED)
                     i = input()
-                    if i == 'y' or i == 'yes':
+                    if i in ['y', 'yes']:
                         memory.update_data('city', city)
                         memory.save()
                     if s == 'umbrella':

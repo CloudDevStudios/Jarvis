@@ -22,8 +22,6 @@ def write_agenda(jarvis, s):
     invalid_input = False
     invalid_time = True
     invalid_date = True
-    # list of column names
-    header = ['DATE', 'TIME', 'PLACE', 'TITLE', 'DESCRIPTION']
     # list with event's details
     events_list = []
 
@@ -87,7 +85,9 @@ def write_agenda(jarvis, s):
     if not events_list:
         print('Nothing for the agenda')
     else:
-        print('New inputs are: ' + str(events_list))
+        print(f'New inputs are: {events_list}')
+        # list of column names
+        header = ['DATE', 'TIME', 'PLACE', 'TITLE', 'DESCRIPTION']
         try:
             with open('agenda.csv', 'a', newline='') as csv_file:
                 writer = csv.writer(csv_file)
@@ -105,10 +105,9 @@ def write_agenda(jarvis, s):
 @plugin("read agenda")
 def read_agenda(jarvis, s):
     try:
-        file = open('agenda.csv', 'r')
-        reader = csv.reader(file)
-        for row in reader:
-            print(row)
-        file.close()
+        with open('agenda.csv', 'r') as file:
+            reader = csv.reader(file)
+            for row in reader:
+                print(row)
     except BaseException:
         print('There is not an agenda')

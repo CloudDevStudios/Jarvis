@@ -16,7 +16,7 @@ def basetimer(jarvis, event_name, target_datetime, color=Fore.YELLOW,
         check_year (bool): if not targeting a particular year,
         reset the date if the event has already happened.
     """
-    actual_datetime = datetime.datetime.today()
+    actual_datetime = datetime.datetime.now()
     if check_year:
         # check if the event has already happened this year
         if actual_datetime > target_datetime:
@@ -36,7 +36,7 @@ def christmastimer(jarvis, s):
     """
     Tells remaining time until Christmas.
     """
-    actual_datetime = datetime.datetime.today()
+    actual_datetime = datetime.datetime.now()
     christmas_time = datetime.datetime(
         actual_datetime.year, 12, 24, 23, 59, 59)
     basetimer(jarvis, 'Christmas', christmas_time, Fore.GREEN)
@@ -47,6 +47,6 @@ def endofyeartimer(jarvis, s):
     """
     Tells remaining time until the end of the year.
     """
-    actual_datetime = datetime.datetime.today()
+    actual_datetime = datetime.datetime.now()
     end_of_year = datetime.datetime(actual_datetime.year, 12, 31, 23, 59, 59)
     basetimer(jarvis, 'End of the Year', end_of_year)

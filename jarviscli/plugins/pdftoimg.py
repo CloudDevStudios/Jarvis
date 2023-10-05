@@ -26,11 +26,10 @@ class PdfToImage:
             user_input = user_input.lower()
 
             # For quiting the program
-            if user_input == 'q' or user_input == 'quit' or user_input == '2':
+            if user_input in ['q', 'quit', '2']:
                 jarvis.say("See you next time :D", Fore.CYAN)
                 break
 
-            # Converting a pdf with a given path to image
             elif user_input == '1':
                 while True:
                     pdf_path = jarvis.input('Enter the full path of the pdf: ')
@@ -41,7 +40,6 @@ class PdfToImage:
                             'Opps! Looks like you entered an invalid path. Kindly Re-enter', Fore.RED)
                 pages = self.convert_to_images(pdf_path, jarvis)
 
-            # For an incorrectly entered option
             else:
                 jarvis.incorrect_option()
                 continue
@@ -55,8 +53,7 @@ class PdfToImage:
         pages option and return it
         """
         self.path = pdf_path
-        pages = convert_from_path(pdf_path)
-        return pages
+        return convert_from_path(pdf_path)
 
     def available_options(self, jarvis):
         """
@@ -72,9 +69,6 @@ class PdfToImage:
         Save the thus generated images to the destination
         specified
         """
-        page_count = 1
-        for page in pages:
-            page.save('page_' + str(page_count) + '.jpg', 'JPEG')
-            page_count += 1
-
+        for page_count, page in enumerate(pages, start=1):
+            page.save(f'page_{str(page_count)}.jpg', 'JPEG')
         jarvis.say('Your images are saved successfully', Fore.GREEN)

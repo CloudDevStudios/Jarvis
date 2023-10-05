@@ -18,18 +18,14 @@ class DialCode:
     """
 
     def __call__(self, jarvis, s):
-        # Call handle_input() function wich returns the code
-        # (or False if no such country)
-        code = self.handle_input(s)
-
-        if code:
-            jarvis.say(Fore.GREEN + 'Dial code is ' + Fore.WHITE + code)
+        if code := self.handle_input(s):
+            jarvis.say(f'{Fore.GREEN}Dial code is {Fore.WHITE}{code}')
         else:
             # Ask whether to print all available countries if False
-            jarvis.say(Fore.RED + "Can't find code for country "
-                                + Fore.WHITE + "'" + s + "'")
-            choice = jarvis.input(Fore.GREEN + 'Print avaliable countries?'
-                                  + Fore.WHITE + ' (y/N): ')
+            jarvis.say(f"{Fore.RED}Can't find code for country {Fore.WHITE}'{s}'")
+            choice = jarvis.input(
+                f'{Fore.GREEN}Print avaliable countries?{Fore.WHITE} (y/N): '
+            )
 
             if choice in ['y', 'Y']:
                 # Open the file with dial codes
@@ -47,22 +43,19 @@ class DialCode:
 
     def handle_input(self, country):
 
-        # Open the file with dial codes
-        codes_file = open(os.path.join(FILE_PATH,
-                                       "../data/dial_codes.json"), 'r')
-
-        # Load json with codes from file
-        data = json.loads(codes_file.read())
-        codes_file.close()
-
-        # Compare user's input to each "country_name" in json
-        # and find necessary code
-        for i in data:
-            if country in [i["country_name"].lower(), i["country_code"].lower()]:
-                code = i["dial_code"]
-                return(code)
-
-        return(False)
+        with open(os.path.join(FILE_PATH,
+                                       "../data/dial_codes.json"), 'r') as codes_file:
+            # Load json with codes from file
+            data = json.loads(codes_file.read())
+        return next(
+            (
+                i["dial_code"]
+                for i in data
+                if country
+                in [i["country_name"].lower(), i["country_code"].lower()]
+            ),
+            False,
+        )
 
 
 @alias('country with phone code',
@@ -83,34 +76,22 @@ class CountryByhDC:
     """
 
     def __call__(self, jarvis, s):
-        countries = self.handle_input(s)
-
-        if countries:
+        if countries := self.handle_input(s):
             # String from countries list
             countries_str = '; '.join(countries)
             jarvis.say(Fore.GREEN + countries_str)
         else:
-            jarvis.say(Fore.RED + "Can't find country with code " + Fore.WHITE + "'" + s + "'")
+            jarvis.say(f"{Fore.RED}Can't find country with code {Fore.WHITE}'{s}'")
 
     def handle_input(self, code):
-        # Open the file with dial codes
-        codes_file = open(os.path.join(FILE_PATH,
-                                       "../data/dial_codes.json"), 'r')
-
-        # Load json from file
-        data = json.loads(codes_file.read())
-        codes_file.close()
-
-        # Compare user's input to each "country_name" in json
-        # and find necessary countries
-        # Use LIST because there can be countries with similar dial codes
-        # (Canada & United States, etc.)
-        countries = []
-        for i in data:
-            if code in [i["dial_code"].lower(), i["dial_code"].lower().replace('+', '')]:
-                countries.append(i["country_name"])
-
-        if len(countries) >= 1:
-            return(countries)
-        else:
-            return(False)
+        with open(os.path.join(FILE_PATH,
+                                       "../data/dial_codes.json"), 'r') as codes_file:
+            # Load json from file
+            data = json.loads(codes_file.read())
+        countries = [
+            i["country_name"]
+            for i in data
+            if code
+            in [i["dial_code"].lower(), i["dial_code"].lower().replace('+', '')]
+        ]
+        return countries if countries else False

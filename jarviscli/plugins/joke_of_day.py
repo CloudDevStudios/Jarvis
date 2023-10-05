@@ -24,8 +24,8 @@ class joke_of_day:
             self.joke(jarvis, joke_fetch)
 
     def get_joke(self, jarvis):
+        url = "https://api.jokes.one/jod"
         while True:
-            url = "https://api.jokes.one/jod"
             jarvis.spinner_start('Fetching')
             r = requests.get(url)
             if r is None:
@@ -39,6 +39,6 @@ class joke_of_day:
         title = joke_fetch["contents"]["jokes"][0]["joke"]["title"]
         joke = joke_fetch["contents"]["jokes"][0]["joke"]["text"]
         print()
-        jarvis.say("Title: " + title, Fore.BLUE)
+        jarvis.say(f"Title: {title}", Fore.BLUE)
         print()
         jarvis.say(joke, Fore.YELLOW)

@@ -11,7 +11,7 @@ def error_output(jarvis, nm_scan) -> None:
 
 def show_output(jarvis, results: dict) -> None:
     uphosts: str = results['nmap']['scanstats']['uphosts']
-    jarvis.say('Number of hosts up: ' + uphosts + '\n', Fore.GREEN)
+    jarvis.say(f'Number of hosts up: {uphosts}' + '\n', Fore.GREEN)
     devices: dict = results['scan']
     for d in devices:
         jarvis.say(d, Fore.GREEN)

@@ -32,35 +32,30 @@ class Cricket():
 
     def live_score(self, index):
         if self.all_match_data[index]['mchstate'] == 'preview':
-            return(Fore.RED + "MATCH YET TO BEGIN")
+            return f"{Fore.RED}MATCH YET TO BEGIN"
         selected_match = self.all_match_data[index]
         data = self.c.livescore(self.matches[index]['id'])
-        score = {}
-        score['matchinfo'] = "{}, {}".format(
-            selected_match['srs'], selected_match['mnum'])
-        score['status'] = "{}".format(selected_match['status'])
-        score['bowling'] = data['bowling']
-        score['batting'] = data['batting']
-
+        score = {
+            'matchinfo': f"{selected_match['srs']}, {selected_match['mnum']}",
+            'status': f"{selected_match['status']}",
+            'bowling': data['bowling'],
+            'batting': data['batting'],
+        }
         text = ''
         text += Fore.LIGHTYELLOW_EX + \
-            score['matchinfo'] + '\n' + score['status'] + '\n\n'
+                score['matchinfo'] + '\n' + score['status'] + '\n\n'
 
         text += Fore.BLUE + score['batting']['team'] + Fore.BLACK
         for scr in reversed(score['batting']['score']):
-            text += " :- {}/{} in {} overs\n".format(
-                scr['runs'], scr['wickets'], scr['overs'])
+            text += f" :- {scr['runs']}/{scr['wickets']} in {scr['overs']} overs\n"
         for b in reversed(score['batting']['batsman']):
-            text += "{} : {}({}) \n".format(
-                b['name'].strip('*'), b['runs'], b['balls'])
+            text += f"{b['name'].strip('*')} : {b['runs']}({b['balls']}) \n"
 
         text += Fore.BLUE + '\n' + score['bowling']['team'] + Fore.BLACK
         for scr in reversed(score['bowling']['score']):
-            text += " :- {}/{} in {} overs\n".format(
-                scr['runs'], scr['wickets'], scr['overs'])
+            text += f" :- {scr['runs']}/{scr['wickets']} in {scr['overs']} overs\n"
         for b in reversed(score['bowling']['bowler']):
-            text += "{} : {}/{} \n".format(b['name'].strip('*'),
-                                           b['wickets'], b['runs'])
+            text += f"{b['name'].strip('*')} : {b['wickets']}/{b['runs']} \n"
         text += Fore.RESET
 
         return text
@@ -68,15 +63,17 @@ class Cricket():
     def commentary(self, index):
         selected_match = self.all_match_data[index]
         data = self.c.commentary(self.matches[index]['id'])
-        comm = {'matchinfo': "{}, {}".format(
-            selected_match['srs'], selected_match['mnum']), 'status': "{}".format(selected_match['status']),
-            'commentary': data['commentary']}
+        comm = {
+            'matchinfo': f"{selected_match['srs']}, {selected_match['mnum']}",
+            'status': f"{selected_match['status']}",
+            'commentary': data['commentary'],
+        }
         text = []
         for com in comm['commentary']:
             line = ''
             if com['over']:
                 line += com['over'] + ' : '
-            line += "{}\n\n".format(com['comm'])
+            line += f"{com['comm']}\n\n"
             # doing bold breaklines and italics looks good in terminal
             text.append(
                 line.replace(
@@ -94,7 +91,7 @@ class Cricket():
         text.reverse()
 
         commentary = Fore.LIGHTYELLOW_EX + \
-            comm['matchinfo'] + '\n' + comm['status'] + '\n\n' + Fore.RESET
+                comm['matchinfo'] + '\n' + comm['status'] + '\n\n' + Fore.RESET
         for line in text:
             commentary += line
 
@@ -103,27 +100,28 @@ class Cricket():
     def scorecard(self, index):
         selected_match = self.all_match_data[index]
         data = self.c.scorecard(self.matches[index]['id'])
-        card = {'matchinfo': "{}, {}".format(
-            selected_match['srs'], selected_match['mnum']), 'status': "{}".format(selected_match['status']),
-            'scorecard': data['scorecard']}
+        card = {
+            'matchinfo': f"{selected_match['srs']}, {selected_match['mnum']}",
+            'status': f"{selected_match['status']}",
+            'scorecard': data['scorecard'],
+        }
         text = ''
         text += Fore.LIGHTYELLOW_EX + \
-            card['matchinfo'] + '\n' + card['status'] + '\n\n'
+                card['matchinfo'] + '\n' + card['status'] + '\n\n'
         text += Fore.BLACK + '*' * 35 + '\n\n'
 
         for scr in reversed(card['scorecard']):
-            text += Fore.LIGHTYELLOW_EX + "{}\nInnings: {}\n{}/{} in {} overs\n\n".format(
-                scr['batteam'], scr['inng_num'], scr['runs'], scr['wickets'], scr['overs'])
+            text += f"{Fore.LIGHTYELLOW_EX}{scr['batteam']}\nInnings: {scr['inng_num']}\n{scr['runs']}/{scr['wickets']} in {scr['overs']} overs\n\n"
             text += Fore.BLUE + "Batting\n"
             text += Fore.RED + \
-                "{:<17} {:<3} {:<3} {:<3} {}\n\n".format('Name', 'R', 'B', '4', '6')
+                    "{:<17} {:<3} {:<3} {:<3} {}\n\n".format('Name', 'R', 'B', '4', '6')
             for b in scr['batcard']:
                 text += Fore.BLACK + "{:<17} {:<3} {:<3} {:<3} {}\n{}\n\n".format(
                     b['name'], b['runs'], b['balls'], b['fours'], b['six'], b['dismissal'])
             text += Fore.LIGHTYELLOW_EX + "-" * 35 + "\n\n"
             text += Fore.BLUE + "Bowling\n"
             text += Fore.RED + \
-                "{:<17} {:<5} {:<3} {:<3} {}\n\n".format('Name', 'O', 'M', 'R', 'W')
+                    "{:<17} {:<5} {:<3} {:<3} {}\n\n".format('Name', 'O', 'M', 'R', 'W')
             for b in scr['bowlcard']:
                 text += Fore.BLACK + "{:<17} {:<5} {:<3} {:<3} {}\n\n".format(
                     b['name'], b['overs'], b['maidens'], b['runs'], b['wickets'])
@@ -136,7 +134,7 @@ class Cricket():
             print("No Matches Being Played!\n", Fore.RED)
             return
         for i, m in enumerate(self.matches, 1):
-            print("{}. {} {}".format(str(i), m['srs'], m['mnum']))
+            print(f"{str(i)}. {m['srs']} {m['mnum']}")
         while True:
             try:
                 choice = int(jarvis.input('\nEnter choice (number): ', Fore.RED))
@@ -152,14 +150,14 @@ class Cricket():
         res = self.live_score(selected_match_id)
         print(res)
 
-        if res == Fore.RED + "MATCH YET TO BEGIN":
+        if res == f"{Fore.RED}MATCH YET TO BEGIN":
             return
 
         while True:
-            print(Fore.LIGHTBLUE_EX + '1. Full Score Card')
+            print(f'{Fore.LIGHTBLUE_EX}1. Full Score Card')
             print('2. Commentary')
             print('3. Refresh Score')
-            print('4. Quit' + Fore.RESET)
+            print(f'4. Quit{Fore.RESET}')
 
             while True:
                 try:

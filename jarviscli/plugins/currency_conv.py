@@ -40,8 +40,7 @@ class Currencyconv():
             result = b.convert_btc_to_cur(Decimal(amount), to)
         else:
             result = c.convert(fr, to, Decimal(amount))
-        outputText = str(amount) + " " + fr + \
-            " are equal to " + str(result) + " " + to
+        outputText = f"{str(amount)} {fr} are equal to {str(result)} {to}"
         jarvis.say(outputText)
 
     def find_currencies(self):
@@ -51,7 +50,7 @@ class Currencyconv():
 
         with open(os.path.join(FILE_PATH, "../data/currencies.csv"), mode='r') as infile:
             reader = csv.reader(infile)
-            mydict = {r.upper(): row[2] for row in reader for r in row[0:3]}
+            mydict = {r.upper(): row[2] for row in reader for r in row[:3]}
         return mydict
 
     def get_currency(self, jarvis, prompt, currencies):

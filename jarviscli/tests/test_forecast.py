@@ -61,10 +61,7 @@ class ForecastTest(PluginTest):
         self.test = self.load_plugin(check_forecast)
 
     def test_header_as_expected_when_no_location(self):
-        my_city_and_country = "{},{}".format(
-            self.current_location['city'],
-            self.current_location['country_code']
-        )
+        my_city_and_country = f"{self.current_location['city']},{self.current_location['country_code']}"
         with patch.object(requests, 'get', return_value=MyResponse) as get_mock:
             self.test.run('')
             get_mock.assert_called_with(
@@ -83,9 +80,8 @@ class ForecastTest(PluginTest):
     def test_forecast_formatted_as_expected(self):
         with patch.object(requests, 'get', return_value=MyResponse) as _:
             self.test.run('Some location')
-            last_call = "\tMin temperature: {} {}".format(
-                '17.0', self.units['str_units'])
-            third_call = "\tWeather: {}".format('Clear')
+            last_call = f"\tMin temperature: 17.0 {self.units['str_units']}"
+            third_call = f"\tWeather: Clear"
 
             self.assertEqual(last_call, self.history_say().last_text())
             self.assertEqual(third_call, self.history_say().view_text(3))

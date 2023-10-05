@@ -18,6 +18,6 @@ def binary(jarvis, s):
         return
     else:
         if n < 0:
-            jarvis.say("-" + bin(n)[3:], Fore.YELLOW)
+            jarvis.say(f"-{bin(n)[3:]}", Fore.YELLOW)
         else:
             jarvis.say(bin(n)[2:], Fore.YELLOW)

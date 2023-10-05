@@ -17,19 +17,19 @@ def wiped_slate(player):  # resets all hands and bets
 def pprinthand(hand, suit, type='visible'):  # returns hand as a string which may or may not be hidden.
     temphand = hand[:]
     for i in range(len(temphand)):
-        if temphand[i] == 1 or temphand[i] == 11:
+        if temphand[i] in [1, 11]:
             temphand[i] = 'A'  # 1 or 11 is value of ace.
-        temphand[i] = str(temphand[i]) + " of " + suit[i]
-    if type == 'visible':
+        temphand[i] = f"{str(temphand[i])} of {suit[i]}"
+    if type == 'partially-visible':
+        return f'[{str(temphand[0])},hidden]'
+    elif type == 'visible':
         return str(temphand)
-    elif type == 'partially-visible':
-        return '[' + str(temphand[0]) + ',hidden]'
 
 
 def pprinthandlist(handlist, suitlist):  # returns handlist as a string
-    newhandlist = []
-    for i in range(len(handlist)):
-        newhandlist.append(pprinthand(handlist[i], suitlist[i]))
+    newhandlist = [
+        pprinthand(handlist[i], suitlist[i]) for i in range(len(handlist))
+    ]
     return str(newhandlist)
 
 
@@ -73,7 +73,7 @@ def move(hand, suit, cards, suits,
         if choice in ['H', 'h']:
             newcard = random.choice(cards)
             newsuit = random.choice(suits)
-            print("Newcard is", str(newcard) + " of " + newsuit)
+            print("Newcard is", f"{str(newcard)} of {newsuit}")
             hand[0].append(newcard)
             suit[0].append(newsuit)
             print("Updated hand is", pprinthand(hand[0], suit[0]))
@@ -101,17 +101,17 @@ def move(hand, suit, cards, suits,
 
         elif choice in ['P', 'p']:
             if hand[0][0] == hand[0][1]:
-                if not hand[0][0] == 1:
+                if hand[0][0] != 1:
                     splitHand1 = [[0, 0]]
                     splitHand2 = [[0, 0]]
                     splitSuit1 = [[0, 0]]
                     splitSuit2 = [[0, 0]]
                     newcard1 = random.choice(cards)
                     newsuit1 = random.choice(suits)
-                    print("Newcard for first split is", str(newcard1) + " of " + newsuit1)
+                    print("Newcard for first split is", f"{str(newcard1)} of {newsuit1}")
                     newcard2 = random.choice(cards)
                     newsuit2 = random.choice(suits)
-                    print("Newcard for second split is", str(newcard2) + " of " + newsuit2)
+                    print("Newcard for second split is", f"{str(newcard2)} of {newsuit2}")
                     splitHand1[0][0] = hand[0][0]
                     splitHand2[0][0] = hand[0][1]
                     splitHand1[0][1] = newcard1
@@ -210,18 +210,24 @@ def blackjack(jarvis, s):
         jarvis.say('---------------------------')
 
         # Dealer's moves
-        jarvis.say("Dealer hand: " + pprinthand(dealerhand, dealersuit), Fore.MAGENTA)
+        jarvis.say(f"Dealer hand: {pprinthand(dealerhand, dealersuit)}", Fore.MAGENTA)
         dealersum, dealerhand = blackjacksum(dealerhand)
-        jarvis.say("Dealer's sum is " + str(dealersum), Fore.MAGENTA)
+        jarvis.say(f"Dealer's sum is {str(dealersum)}", Fore.MAGENTA)
         while dealersum < 17 or (
                 dealersum == 17 and 11 in dealerhand):  # condition which determines if dealer hits or not.
             jarvis.say("Dealer draws another card", Fore.MAGENTA)
             dealerhand.append(random.choice(cards))
             dealersuit.append(random.choice(suits))
-            jarvis.say("Newcard is " + str(dealerhand[-1]) + " of " + str(dealersuit[-1]), Fore.MAGENTA)
+            jarvis.say(
+                f"Newcard is {str(dealerhand[-1])} of {str(dealersuit[-1])}",
+                Fore.MAGENTA,
+            )
             dealersum, dealerhand = blackjacksum(dealerhand)
-            jarvis.say("Dealer's sum is " + str(dealersum), Fore.MAGENTA)
-            jarvis.say("Dealer's hand is " + pprinthand(dealerhand, dealersuit), Fore.MAGENTA)
+            jarvis.say(f"Dealer's sum is {str(dealersum)}", Fore.MAGENTA)
+            jarvis.say(
+                f"Dealer's hand is {pprinthand(dealerhand, dealersuit)}",
+                Fore.MAGENTA,
+            )
         delay()
         jarvis.say('---------------------------')
 
@@ -233,7 +239,10 @@ def blackjack(jarvis, s):
             bet = player['bets'][j]
             sum_, hand = blackjacksum(hand)
             dealersum, dealerhand = blackjacksum(dealerhand)
-            jarvis.say("For the hand- " + pprinthand(hand, suit) + '  sum is-' + str(sum_), Fore.BLUE)
+            jarvis.say(
+                f"For the hand- {pprinthand(hand, suit)}  sum is-{str(sum_)}",
+                Fore.BLUE,
+            )
             if len(hand) == 2 and sum_ == 21:
                 jarvis.say("Blackjack!", Fore.BLUE)
                 profit = bet * 1.5
@@ -262,7 +271,7 @@ def blackjack(jarvis, s):
                 jarvis.say("Push", Fore.BLUE)
                 profit = bet * 0
                 player['profit'].append(bet * 0)
-            jarvis.say("Profit is- " + str(profit), Fore.BLUE)
+            jarvis.say(f"Profit is- {str(profit)}", Fore.BLUE)
         players = wiped_slate(player)
         choice = jarvis.input("Do you wish to play another round?Y/n \n", Fore.GREEN)
 
@@ -270,7 +279,7 @@ def blackjack(jarvis, s):
     jarvis.say('---------------------------')
     profit = sum(player['profit'])
     if profit >= 0:
-        jarvis.say("Your total profit is " + str(profit), Fore.GREEN)
+        jarvis.say(f"Your total profit is {str(profit)}", Fore.GREEN)
     else:
-        jarvis.say("Your total loss is " + str(profit * -1), Fore.GREEN)
+        jarvis.say(f"Your total loss is {str(profit * -1)}", Fore.GREEN)
     jarvis.say("Goodbye, Let's play again sometime!", Fore.GREEN)

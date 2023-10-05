@@ -30,7 +30,7 @@ debug_log = None
 def log_init():
     global debug_log
     debug_log = NamedTemporaryFile(delete=False, mode="w")
-    print("Logging to {}".format(debug_log.name))
+    print(f"Logging to {debug_log.name}")
 
 
 def log_close():
@@ -46,7 +46,9 @@ def fail(msg, fatal=False):
     if fatal:
         log("FATAL!")
         print("Installation failed with unexpected error - This should not have happened.")
-        print("Please check logs at \"{}\". If you open a bug report, please include this file.".format(debug_log.name))
+        print(
+            f'Please check logs at \"{debug_log.name}\". If you open a bug report, please include this file.'
+        )
     else:
         print("Installation failed!")
     debug_log.close()
@@ -61,11 +63,11 @@ def log(msg):
         print('------------------------------')
         print("Logging failed?")
         print(repr(e))
-        print(str(e))
-        print(str(e.args))
+        print(e)
+        print(e.args)
         print('msg:')
         try:
-            print(str(msg))
+            print(msg)
         except BaseException:
             print('msg unprintable')
         print('-----------------------------')
@@ -77,7 +79,7 @@ def printlog(msg):
 
 
 def section(title):
-    printlog("\n{:=^50}".format(" {} ".format(title)))
+    printlog("\n{:=^50}".format(f" {title} "))
 
 
 spinning = True
@@ -107,24 +109,27 @@ def spinning_cursor_stop():
 def user_input(items):
     log("User input:")
     for x, item in enumerate(items):
-        printlog("{}) {}".format((x + 1), item[0]))
+        printlog(f"{x + 1}) {item[0]}")
 
     while True:
-        number = input("Select number {}-{}: ".format(1, len(items)))
+        number = input(f"Select number 1-{len(items)}: ")
         try:
             number = int(number) - 1
         except ValueError:
-            log("> User input {} - not a number".format(number))
+            log(f"> User input {number} - not a number")
             continue
 
         if number >= 0 and number < len(items):
-            log("> User input {} - ok: {}".format(number, items[number][1]))
+            log(f"> User input {number} - ok: {items[number][1]}")
             return items[number][1]
         else:
-            log("> User input {} - out of range {} - {}".format(number, 1, len(items)))
+            log(f"> User input {number} - out of range 1 - {len(items)}")
 
 
 def shell(cmd):
+
+
+
     class Fail:
         def should_not_fail(self, msg=''):
             fail(msg, fatal=True)
@@ -133,7 +138,8 @@ def shell(cmd):
             return False
 
         def __str__(self):
-            return "FAIL {}".format(self.exception)
+            return f"FAIL {self.exception}"
+
 
     class Success:
         def should_not_fail(self, msg=''):
@@ -148,7 +154,7 @@ def shell(cmd):
     exit_code = Success()
 
     log("_" * 40)
-    log("Shell: {}".format(cmd))
+    log(f"Shell: {cmd}")
     spinning_cursor_start()
 
     cli_output = ''
@@ -167,7 +173,7 @@ def shell(cmd):
     exit_code.cli_output = cli_output
 
     log(cli_output)
-    log("Shell: Exit {}".format(str(exit_code)))
+    log(f"Shell: Exit {str(exit_code)}")
     log("-" * 40)
     log("")
 

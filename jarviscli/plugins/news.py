@@ -36,7 +36,7 @@ class News:
         if s == "updatekey":
             key = jarvis.input(
                 "Please enter your NEWS API key (q or Enter go back): ")
-            if key.lower() == "q" or key.lower() == "":
+            if key.lower() in ["q", ""]:
                 jarvis.say("Could not update the NEWS API key! ", Fore.RED)
             else:
                 self.update_api_key(jarvis, key)
@@ -59,25 +59,21 @@ class News:
                 "news remove\t : Removes a source from the news channel of the user")
             jarvis.say("news [word]\t : Finds articles related to that word")
         elif s == "sources":
-            sources = self.get_news_sources(jarvis)
-            if not sources:
+            if sources := self.get_news_sources(jarvis):
+                dic = {str(sources.index(source) + 1): source for source in sources}
+                for index in sorted([int(x) for x in dic]):
+                    jarvis.say(f"{str(index)} : {dic[str(index)]}")
+            else:
                 jarvis.say(
                     "No sources configured. Use 'news configure' to add sources.",
                     Fore.RED)
-            else:
-                dic = {}
-                for source in sources:
-                    dic[str(sources.index(source) + 1)] = source
-
-                for index in sorted([int(x) for x in dic.keys()]):
-                    jarvis.say(str(index) + " : " + dic[str(index)])
         elif self.get_api_key(jarvis) is None:
             jarvis.say("Missing API key", Fore.RED)
             jarvis.say("Visit https://newsapi.org/ to get the key", Fore.RED)
             jarvis.say(
                 "Use \'news updatekey\' command to add a key\n",
                 Fore.RED)
-        elif s == "" or s == " ":
+        elif s in ["", " "]:
             self.parse_articles(self.get_headlines(jarvis), jarvis)
         else:
             searchlist = s.split(" ")
@@ -136,12 +132,9 @@ class News:
         """
         sources = self.get_news_sources(jarvis)
 
-        dic = {}
-        for source in sources:
-            dic[str(sources.index(source) + 1)] = source
-
-        for index in sorted([int(x) for x in dic.keys()]):
-            jarvis.say(str(index) + " : " + dic[str(index)])
+        dic = {str(sources.index(source) + 1): source for source in sources}
+        for index in sorted([int(x) for x in dic]):
+            jarvis.say(f"{str(index)} : {dic[str(index)]}")
         index_list = jarvis.input(
             "Type the indexes of the sources you would like to remove from your channel separated by "
             "space: ")
@@ -156,9 +149,9 @@ class News:
                 sources.remove(source)
                 jarvis.update_data("news-sources", sources)
                 jarvis.say(
-                    source
-                    + " has been successfully removed from your news channel!",
-                    Fore.GREEN)
+                    f"{source} has been successfully removed from your news channel!",
+                    Fore.GREEN,
+                )
             else:
                 jarvis.say("Index not found!", Fore.RED)
         return self.get_news_sources(jarvis)
@@ -168,7 +161,7 @@ class News:
             configures the news channel of the user
         """
         for index in sorted([int(x) for x in self.source_dict.keys()]):
-            jarvis.say(str(index) + ": " + self.source_dict.get(str(index)))
+            jarvis.say(f"{str(index)}: {self.source_dict.get(str(index))}")
         index_list = jarvis.input(
             "Type the indexes of the sources you would like to add to your channel separated by "
             "space: ")
@@ -181,7 +174,7 @@ class News:
             if index in self.source_dict.keys():
                 self.add_source(jarvis, self.source_dict.get(index, index))
             else:
-                jarvis.say(index + " is not a valid index", Fore.RED)
+                jarvis.say(f"{index} is not a valid index", Fore.RED)
 
     def get_headlines(self, jarvis):
         """
@@ -194,12 +187,12 @@ class News:
                 "You have not configured any source. Getting top headlines\n",
                 Fore.GREEN)
             url = "https://newsapi.org/v2/top-headlines?country=us&apiKey=" + \
-                self.get_api_key(jarvis)
+                    self.get_api_key(jarvis)
         else:
             url = "https://newsapi.org/v2/top-headlines?sources="
             for source in sources:
-                url += source + ","
-            url += "&apiKey=" + self.get_api_key(jarvis)
+                url += f"{source},"
+            url += f"&apiKey={self.get_api_key(jarvis)}"
         return self._get(jarvis, url)
 
     def get_news(self, jarvis, searchlist):
@@ -211,27 +204,27 @@ class News:
         url = "https://newsapi.org/v2/everything?q="
 
         for i in searchlist:
-            url += i + "%20"
+            url += f"{i}%20"
         if len(sources) != 0:
             url += "&sources="
             for source in sources:
-                url += source + ","
-        url += "&apiKey=" + self.get_api_key(jarvis)
+                url += f"{source},"
+        url += f"&apiKey={self.get_api_key(jarvis)}"
         return self._get(jarvis, url)
 
     def _get(self, jarvis, url):
         """fetch a webpage"""
         response = requests.get(url)
         if response.status_code == requests.codes.ok:
-            data = json.loads(response.text)
-            return data
+            return json.loads(response.text)
+        if response.status_code == 401:
+            jarvis.say("API key not valid", Fore.RED)
         else:
-            if response.status_code == 401:
-                jarvis.say("API key not valid", Fore.RED)
-            else:
-                jarvis.say("An error occured: Error code: "
-                           + response.raise_for_status(), Fore.RED)
-            return None
+            jarvis.say(
+                f"An error occured: Error code: {response.raise_for_status()}",
+                Fore.RED,
+            )
+        return None
 
     def parse_articles(self, data, jarvis):
         article_list = {}
@@ -244,7 +237,7 @@ class News:
             jarvis.say("No Articles matching the word(s)", Fore.RED)
             return
         for article in data['articles']:
-            jarvis.say(str(index) + ": " + article['title'])
+            jarvis.say(f"{str(index)}: " + article['title'])
             article_list[index] = article
             index += 1
 
@@ -262,7 +255,7 @@ class News:
         try:
             int(idx)
             if int(idx) > (index - 1):
-                jarvis.say(str(idx) + " is not a valid index", Fore.RED)
+                jarvis.say(f"{str(idx)} is not a valid index", Fore.RED)
                 return
             elif int(idx) == 0:
                 return
@@ -276,6 +269,6 @@ class News:
         jarvis.say("Do you want to read more? (yes/no): ")
         i = jarvis.input()
         # if user wants to read more open browser to article url
-        if i.lower() == "yes" or i.lower() == 'y':
+        if i.lower() in ["yes", 'y']:
             webbrowser.open(article_list[int(idx)]['url'])
         return

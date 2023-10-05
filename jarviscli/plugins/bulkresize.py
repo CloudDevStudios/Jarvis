@@ -19,7 +19,7 @@ def valid_path(path):
     path: a path (str)
         a string variable that represents a path
     """
-    return True if os.path.isdir(path) else False
+    return bool(os.path.isdir(path))
 
 
 def dir_exist(path):
@@ -33,7 +33,7 @@ def dir_exist(path):
     path: a path (str)
         a string that represents a path
     """
-    return True if os.path.exists(path) else False
+    return bool(os.path.exists(path))
 
 
 def create_dir(path):
@@ -61,11 +61,11 @@ def list_contents(input_path):
     input_path: a path (str)
         a string that represents a path that leads to a valid dir
     """
-    filepath = list()
+    filepath = []
     filename = os.listdir(input_path)
 
     for name in filename:
-        path = input_path + "/" + name
+        path = f"{input_path}/{name}"
         if os.path.isfile(path) and get_extension(path):
             filepath.append(path)
     return filepath
@@ -101,10 +101,7 @@ def get_extension(path):
     """
     file_extension = os.path.splitext(path)[1]
 
-    if file_extension in IMAGE_FORMATS:
-        return True
-    else:
-        return False
+    return file_extension in IMAGE_FORMATS
 
 
 def rename_img(path, number):
@@ -120,8 +117,7 @@ def rename_img(path, number):
     number: a number (int)
         a number that is used in the concatination for the image rename
     """
-    output_path = path + '/' + str(number) + '.jpg'
-    return output_path
+    return f'{path}/{str(number)}.jpg'
 
 
 def output_path_concat(path, im_path):
@@ -136,9 +132,7 @@ def output_path_concat(path, im_path):
     im_path: an image path (str)
         a string that leads to an existing image file path
     """
-    output_path = path + '/' + \
-        os.path.splitext(os.path.basename(im_path))[0] + '.jpg'
-    return output_path
+    return f'{path}/{os.path.splitext(os.path.basename(im_path))[0]}.jpg'
 
 
 def bulk_resizer(input_path, output_path, desired_size=32,
@@ -173,7 +167,7 @@ def bulk_resizer(input_path, output_path, desired_size=32,
         im = cv2.imread(im_pth)
         old_size = im.shape[:2]
         ratio = float(desired_size) / max(old_size)
-        new_size = tuple([int(x * ratio) for x in old_size])
+        new_size = tuple(int(x * ratio) for x in old_size)
 
         # new_size should be in (width, height) format
 
@@ -217,9 +211,7 @@ def spin(jarvis, s):
     path1 = jarvis.input()
     path1 = remove_backslash(path1)
     while not valid_path(path1):
-        jarvis.say(
-            'The path ' + path1 +
-            ' does not lead to a directory!', Fore.RED)
+        jarvis.say(f'The path {path1} does not lead to a directory!', Fore.RED)
         jarvis.say(
             'Please enter a path that leads to an EXISTING DIRECTORY.',
             Fore.RED)
@@ -233,8 +225,9 @@ def spin(jarvis, s):
     path2 = jarvis.input()
     if not dir_exist(path2):
         jarvis.say(
-            'The path ' + path2 + ' does not exist. Do you want to create it?',
-            Fore.YELLOW)
+            f'The path {path2} does not exist. Do you want to create it?',
+            Fore.YELLOW,
+        )
         jarvis.say('Print y for "YES" n for "NO"', Fore.YELLOW)
         answer = jarvis.input()
     if answer == 'y':
