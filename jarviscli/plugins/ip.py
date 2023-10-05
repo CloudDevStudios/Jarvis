@@ -48,4 +48,4 @@ def ip_WIN32(jarvis, s):
 
     hostname = socket.gethostname()
     IP = socket.gethostbyname(hostname)
-    jarvis.say("IP address: " + str(IP))
+    jarvis.say(f"IP address: {str(IP)}")

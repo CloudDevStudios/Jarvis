@@ -30,7 +30,9 @@ class BasketballTest(PluginTest):
             self.test.todays_games(self.jarvis_api)
             date = datetime.datetime.now().strftime('%Y-%m-%d')
             get_mock.assert_called_with(
-                "https://api-basketball.p.rapidapi.com/games?date={}".format(date), headers=self.headers)
+                f"https://api-basketball.p.rapidapi.com/games?date={date}",
+                headers=self.headers,
+            )
 
     def test_search_team(self):
         if self.unable_to_test_plugin:

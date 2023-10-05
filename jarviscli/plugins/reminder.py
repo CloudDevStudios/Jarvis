@@ -77,10 +77,7 @@ class TagBase:
         id = entry["id"]
         todos = TodoBase().get_data(jarvis)
         for todo in todos:
-            new_tags = []
-            for tag_id in todo["tags"]:
-                if tag_id != id:
-                    new_tags.append(tag_id)
+            new_tags = [tag_id for tag_id in todo["tags"] if tag_id != id]
             todo["tags"] = new_tags
         TodoBase().save_data(jarvis, todos)
 
@@ -94,11 +91,8 @@ class TagBase:
 
     def select_one_tag(self, jarvis):
         data = self.load_tags(jarvis)
-        ask_str = []
-        for entry in data:
-            ask_str.append(self.format(jarvis, entry))
-
-        if len(ask_str) == 0:
+        ask_str = [self.format(jarvis, entry) for entry in data]
+        if not ask_str:
             return None
 
         title = 'Please choose from tag list (j and k to move up and down, enter to select):'
@@ -122,11 +116,7 @@ class TagBase:
             jarvis.say("ok")
             return
 
-        # open selection menu
-        ask_str = []
-        for entry in data:
-            ask_str.append(self.format(jarvis, entry))
-
+        ask_str = [self.format(jarvis, entry) for entry in data]
         title = 'Please choose tag to remove (select with space, j and k to move up and down)'
         selected = pick(ask_str, title, multi_select=True)
         selected = [entry[1] for entry in selected]
@@ -190,11 +180,7 @@ class RemindTodoBase:
             jarvis.say("ok")
             return
 
-        # open selection menu
-        ask_str = []
-        for entry in data:
-            ask_str.append(self.format(jarvis, entry))
-
+        ask_str = [self.format(jarvis, entry) for entry in data]
         title = 'Please choose task to remove (select with space, j and k to move up and down)'
         selected = pick(ask_str, title, multi_select=True)
         selected = [entry[1] for entry in selected]
@@ -268,7 +254,7 @@ class TodoBase(RemindTodoBase):
                 except KeyError:
                     tags = []
 
-                if len(tags) > 0:
+                if tags:
                     tag_base = TagBase()
                     tag_strs = [tag_base.format(jarvis, tag_base.get_tag_by_id(jarvis, tag_id))
                                 for tag_id
@@ -285,11 +271,8 @@ class TodoBase(RemindTodoBase):
 
     def select_one_remind(self, jarvis):
         data = self.get_data(jarvis)
-        ask_str = []
-        for entry in data:
-            ask_str.append(self.format(jarvis, entry, addons=[]))
-
-        if len(ask_str) == 0:
+        ask_str = [self.format(jarvis, entry, addons=[]) for entry in data]
+        if not ask_str:
             return None
 
         title = 'Please choose from todo list (j and k to move up and down, enter to select):'
@@ -318,7 +301,7 @@ class TodoBase(RemindTodoBase):
                 ask_str.append(tb.format(jarvis, tag))
                 id_map.append(tag['id'])
 
-        if len(ask_str) == 0:
+        if not ask_str:
             jarvis.say("There are no tags to delete!")
             return
 
@@ -355,9 +338,7 @@ class RemindBase(RemindTodoBase):
             timestamp = item['timestamp']
             if timestamp < time.time():
                 time_format = self.timestamp_to_string(timestamp)
-                jarvis.say(
-                    "Reminder: {} missed ({})".format(
-                        item['message'], time_format), Fore.MAGENTA)
+                jarvis.say(f"Reminder: {item['message']} missed ({time_format})", Fore.MAGENTA)
                 continue
 
             schedule_id = jarvis.schedule(timestamp, self.reminder_exec,
@@ -391,7 +372,7 @@ class RemindBase(RemindTodoBase):
     def format(self, jarvis, entry):
         time = self.timestamp_to_string(entry['timestamp'])
         additional = self.interact().format_interact(jarvis, entry)
-        return "{} => {}{}".format(time, entry['message'], additional)
+        return f"{time} => {entry['message']}{additional}"
 
     def sort(self, remind_list):
         return sorted(remind_list, key=lambda entry: entry['timestamp'])
@@ -417,7 +398,7 @@ class RemindBase(RemindTodoBase):
         s = s.split(" to ")
         if len(s) != 2:
             jarvis.say("Sorry, please say something like:", Fore.MAGENTA)
-            jarvis.say(" > {}".format(example), Fore.MAGENTA)
+            jarvis.say(f" > {example}", Fore.MAGENTA)
             return
 
         time_in = time_in_parser(s[0])
@@ -437,7 +418,7 @@ class RemindBase(RemindTodoBase):
                 jarvis.say("Nothing selected", Fore.MAGENTA)
                 return
             notification_message = todo_refere_entry['message']
-            notification_message = "TODO: {}".format(notification_message)
+            notification_message = f"TODO: {notification_message}"
             todo_refere_id = todo_refere_entry['id']
 
         # schedule
@@ -470,12 +451,12 @@ class RemindTodoInteract_Todo:
     def format_interact(self, jarvis, entry):
         todo_id = entry['id']
         remind_list = self.remind.get_data(jarvis)
-        remind_list = [remind for remind in remind_list
-                       if remind['todo_refere_id'] == todo_id]
-        if len(remind_list) != 0:
+        if remind_list := [
+            remind for remind in remind_list if remind['todo_refere_id'] == todo_id
+        ]:
             remind_list = [self.remind.timestamp_to_string(remind['timestamp'])
                            for remind in remind_list]
-            return " -- remind -- ({})".format(', '.join(remind_list))
+            return f" -- remind -- ({', '.join(remind_list)})"
         return ''
 
 
@@ -495,7 +476,7 @@ class RemindTodoInteract_Remind:
                 return "ERROR"
             else:
                 todo = todo[0]
-            return "ToDo ->-> {}".format(todo['message'])
+            return f"ToDo ->-> {todo['message']}"
         else:
             return ""
 
@@ -648,7 +629,7 @@ class Remind(RemindBase):
         self.first_time_init(jarvis)
 
     def __call__(self, jarvis, s):
-        jarvis.say("## {} ##\n".format(self.timestamp_to_string(time.time())))
+        jarvis.say(f"## {self.timestamp_to_string(time.time())} ##\n")
         self.do_print(jarvis)
 
 

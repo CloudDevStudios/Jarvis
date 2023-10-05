@@ -13,7 +13,7 @@ class TestNearMe(unittest.TestCase):
     def test_near_with_things_and_specific_city(self, mock_search_near):
         things = 'charities'
         city = 'Valencia'
-        data = "{} | {}".format(things, city)
+        data = f"{things} | {city}"
         near_me.main(data)
         mock_search_near.assert_called_once_with(things, city)
 
@@ -22,7 +22,7 @@ class TestNearMe(unittest.TestCase):
         things = 'restaurants'
         city = 'me'
         expected_city = 0
-        data = "{} | {}".format(things, city)
+        data = f"{things} | {city}"
         near_me.main(data)
         mock_search_near.assert_called_once_with(things, expected_city)
 
@@ -30,7 +30,7 @@ class TestNearMe(unittest.TestCase):
     def test_near_with_things_and_empty_space(self, mock_search_near):
         things = 'bars'
         city = ''
-        data = "{} | {}".format(things, city)
+        data = f"{things} | {city}"
         near_me.main(data)
         mock_search_near.assert_called_once_with(things, city)
 

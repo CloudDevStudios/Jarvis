@@ -75,8 +75,7 @@ class JarvisAPI(object):
             try:
                 value = rtype(self.input(prompt, color).replace(',', '.'))
                 if (rmin is not None and value < rmin) or (rmax is not None and value > rmax):
-                    prompt = "Sorry, needs to be between {} and {}. Try again: ".format(
-                        rmin, rmax)
+                    prompt = f"Sorry, needs to be between {rmin} and {rmax}. Try again: "
                 else:
                     return value
             except ValueError:
@@ -254,11 +253,11 @@ class JarvisAPI(object):
                 'Would you like to save the file in the same folder?[y/n] ')
             user_choice = user_choice.lower()
 
-            if user_choice == 'yes' or user_choice == 'y':
+            if user_choice in ['yes', 'y']:
                 destination = get_parent_directory(path)
                 break
 
-            elif user_choice == 'no' or user_choice == 'n':
+            elif user_choice in ['no', 'n']:
                 destination = self.input('Enter the folder destination: ')
                 if not os.path.exists(destination):
                     os.makedirs(destination)
@@ -397,17 +396,16 @@ class CmdInterpreter(Cmd):
                     self))
             setattr(
                 CmdInterpreter,
-                "help_" + plugin_name,
-                partial(
-                    self._api.say,
-                    plugin.get_doc()))
+                f"help_{plugin_name}",
+                partial(self._api.say, plugin.get_doc()),
+            )
 
             plugin.init(self._api)
 
     def _plugin_update_completion(self, plugin, plugin_name):
         """Return True if completion is available"""
-        completions = [i for i in plugin.complete()]
-        if len(completions) > 0:
+        completions = list(plugin.complete())
+        if completions:
             def complete(completions):
                 def _complete_impl(self, text, line, begidx, endidx):
                     return [i for i in completions if i.startswith(text)]
@@ -449,9 +447,8 @@ class CmdInterpreter(Cmd):
         count_enabled = self._plugin_manager.get_number_plugins_loaded()
         count_disabled = len(self._plugin_manager.get_disabled())
         self.say(
-            "{} Plugins enabled, {} Plugins disabled.".format(
-                count_enabled,
-                count_disabled))
+            f"{count_enabled} Plugins enabled, {count_disabled} Plugins disabled."
+        )
 
         if "short" not in s and count_disabled > 0:
             self.say("")
@@ -481,14 +478,13 @@ class CmdInterpreter(Cmd):
                 if (name == "help"):
                     continue
                 try:
-                    aliasString = ", ".join(uniquePlugins[name].alias())
-                    if (aliasString != ""):
-                        pluginOutput = "* " + name + " (" + aliasString + ")"
+                    if aliasString := ", ".join(uniquePlugins[name].alias()):
+                        pluginOutput = f"* {name} ({aliasString})"
                         helpOutput.append(pluginOutput)
                     else:
-                        helpOutput.append("* " + name)
+                        helpOutput.append(f"* {name}")
                 except AttributeError:
-                    helpOutput.append("* " + name)
+                    helpOutput.append(f"* {name}")
 
             Cmd.columnize(self, helpOutput)
 

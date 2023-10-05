@@ -54,8 +54,8 @@ class QRGenerator:
         # replace whitespaces with underscores
         name = name.strip().replace(' ', '_')
         self.filename = re.sub(r'(?u)[^-\w.]', '', name)
-        # generate query and add the needed parameters 
-        query = self.url + "?data=" + url + "&size=250x250"
+        # generate query and add the needed parameters
+        query = f"{self.url}?data={url}&size=250x250"
         # generate QR code from the query
         self._generate_qr(jarvis,query)
 
@@ -109,14 +109,12 @@ class QRGenerator:
             if path == "end":
                 response = path
                 break
-            isFile = os.path.isdir(path)
-            # directory exists
-            if isFile:
+            if isFile := os.path.isdir(path):
                 response = path
                 break
             jarvis.say("\nSorry, the path that you specified couldn't be found",Fore.RED)
             jarvis.say("Try something in this form 'C:\..\..' if you are using Windows for example.")
-            
+
         return response
     
 
@@ -126,7 +124,7 @@ class QRGenerator:
             jarvis.spinner_start('Creating QR ')
             response = requests.get(query)
             # where the png file will be stored
-            location = os.path.join(self.path,self.filename + '.png')
+            location = os.path.join(self.path, f'{self.filename}.png')
             file = open(location, "wb")
             file.write(response.content)
             jarvis.spinner_stop()

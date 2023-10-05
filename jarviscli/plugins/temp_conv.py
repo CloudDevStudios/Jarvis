@@ -24,10 +24,7 @@ class Tempconv():
 
     def temp_valid_regex(self, s):
         """Validate the input string using regex and return a boolean for validity"""
-        if re.search("^-?\\d+(\\.\\d+)?[FfCc]$", s):
-            return True
-        else:
-            return False
+        return bool(re.search("^-?\\d+(\\.\\d+)?[FfCc]$", s))
 
     def temp_convert(self, jarvis, s):
         """Assuming valid regex, handle the actual temperature conversion and output"""
@@ -38,10 +35,10 @@ class Tempconv():
         # run conversions and create output string.
         if s[-1].lower() == 'f':
             new_temp = self.convert_f_to_c(starting_temp)
-            output = "{}° F is {}° C".format(starting_temp, new_temp)
+            output = f"{starting_temp}° F is {new_temp}° C"
         else:
             new_temp = self.convert_c_to_f(starting_temp)
-            output = "{}° C is {}° F".format(starting_temp, new_temp)
+            output = f"{starting_temp}° C is {new_temp}° F"
 
         # use print_say to display the output string
         jarvis.say(output, Fore.BLUE)

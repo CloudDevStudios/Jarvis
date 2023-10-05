@@ -42,19 +42,19 @@ def start_game(jarvis, cash):
             return
         elif choice == 1:
             cash = first_choice(jarvis, cash)
-            jarvis.say("Current Balance: " + str(cash), Fore.RED)
+            jarvis.say(f"Current Balance: {str(cash)}", Fore.RED)
         elif choice == 2:
             cash = second_choice(jarvis, cash)
-            jarvis.say("Current Balance: " + str(cash), Fore.RED)
+            jarvis.say(f"Current Balance: {str(cash)}", Fore.RED)
         elif choice == 3:
             cash = third_choice(jarvis, cash)
-            jarvis.say("Current Balance: " + str(cash), Fore.RED)
+            jarvis.say(f"Current Balance: {str(cash)}", Fore.RED)
         elif choice == 4:
             cash = fourth_choice(jarvis, cash)
-            jarvis.say("Current Balance: " + str(cash), Fore.RED)
+            jarvis.say(f"Current Balance: {str(cash)}", Fore.RED)
         elif choice == 5:
             cash = fifth_choice(jarvis, cash)
-            jarvis.say("Current Balance: " + str(cash), Fore.RED)
+            jarvis.say(f"Current Balance: {str(cash)}", Fore.RED)
 
 
 def get_user_choice(jarvis, cash):
@@ -74,19 +74,19 @@ def get_user_choice(jarvis, cash):
 def first_choice(jarvis, cash):
     print("")
     choice = bet_number(jarvis)
-    jarvis.say("Your choice: " + str(choice), Fore.RED)
+    jarvis.say(f"Your choice: {str(choice)}", Fore.RED)
     bet = bet_amount(jarvis, cash)
-    jarvis.say("Your bet: $" + str(bet), Fore.RED)
+    jarvis.say(f"Your bet: ${str(bet)}", Fore.RED)
     n = input("Press enter to spin roulette")
     result = random.randint(0, 36)
     cash -= bet
 
     print("")
-    jarvis.say("Result: " + str(result), Fore.YELLOW)
+    jarvis.say(f"Result: {result}", Fore.YELLOW)
 
     if result == choice:
         cash += bet * 36
-        jarvis.say("WIN: " + str(bet * 36), Fore.GREEN)
+        jarvis.say(f"WIN: {str(bet * 36)}", Fore.GREEN)
     else:
         jarvis.say("YOU LOST")
 
@@ -108,7 +108,7 @@ def second_choice(jarvis, cash):
 
     print("")
     bet = bet_amount(jarvis, cash)
-    jarvis.say("Your bet: $" + str(bet), Fore.RED)
+    jarvis.say(f"Your bet: ${str(bet)}", Fore.RED)
     print("")
 
     n = input("Press enter to spin roulette")
@@ -116,15 +116,17 @@ def second_choice(jarvis, cash):
     cash -= bet
 
     print("")
-    jarvis.say("Result: " + str(result), Fore.YELLOW)
+    jarvis.say(f"Result: {result}", Fore.YELLOW)
 
-    is_red = False
-    if result in reds:
-        is_red = True
-
-    if (choice == 1 and is_red and result != 0) or (choice == 2 and is_red is False and result != 0):
+    is_red = result in reds
+    if (
+        (choice == 1 and is_red and result != 0)
+        or choice == 2
+        and not is_red
+        and result != 0
+    ):
         cash += bet * 2
-        jarvis.say("WIN: " + str(bet * 2), Fore.GREEN)
+        jarvis.say(f"WIN: {str(bet * 2)}", Fore.GREEN)
     else:
         jarvis.say("YOU LOST")
 
@@ -146,7 +148,7 @@ def third_choice(jarvis, cash):
 
     print("")
     bet = bet_amount(jarvis, cash)
-    jarvis.say("Your bet: $" + str(bet), Fore.RED)
+    jarvis.say(f"Your bet: ${str(bet)}", Fore.RED)
     print("")
 
     n = input("Press enter to spin roulette")
@@ -154,11 +156,11 @@ def third_choice(jarvis, cash):
     cash -= bet
 
     print("")
-    jarvis.say("Result: " + str(result), Fore.YELLOW)
+    jarvis.say(f"Result: {result}", Fore.YELLOW)
 
     if (choice == 1 and result % 2 == 1 and result != 0) or (choice == 2 and result % 2 == 0 and result != 0):
         cash += bet * 2
-        jarvis.say("WIN: " + str(bet * 2), Fore.GREEN)
+        jarvis.say(f"WIN: {str(bet * 2)}", Fore.GREEN)
     else:
         jarvis.say("YOU LOST")
 
@@ -183,7 +185,7 @@ def fourth_choice(jarvis, cash):
 
     print("")
     bet = bet_amount(jarvis, cash)
-    jarvis.say("Your bet: $" + str(bet), Fore.RED)
+    jarvis.say(f"Your bet: ${str(bet)}", Fore.RED)
     print("")
 
     n = input("Press enter to spin roulette")
@@ -191,26 +193,25 @@ def fourth_choice(jarvis, cash):
     cash -= bet
 
     print("")
-    jarvis.say("Result: " + str(result), Fore.YELLOW)
+    jarvis.say(f"Result: {result}", Fore.YELLOW)
 
     if choice == 1:
         if result >= 1 and result <= 12:
             cash += bet * 3
-            jarvis.say("WIN: " + str(bet * 3), Fore.GREEN)
+            jarvis.say(f"WIN: {str(bet * 3)}", Fore.GREEN)
         else:
             jarvis.say("YOU LOST")
     elif choice == 2:
         if result >= 13 and result <= 24:
             cash += bet * 3
-            jarvis.say("WIN: " + str(bet * 3), Fore.GREEN)
+            jarvis.say(f"WIN: {str(bet * 3)}", Fore.GREEN)
         else:
             jarvis.say("YOU LOST")
+    elif result >= 25 and result <= 36:
+        cash += bet * 3
+        jarvis.say(f"WIN: {str(bet * 3)}", Fore.GREEN)
     else:
-        if result >= 25 and result <= 36:
-            cash += bet * 3
-            jarvis.say("WIN: " + str(bet * 3), Fore.GREEN)
-        else:
-            jarvis.say("YOU LOST")
+        jarvis.say("YOU LOST")
 
     print("")
 
@@ -230,7 +231,7 @@ def fifth_choice(jarvis, cash):
 
     print("")
     bet = bet_amount(jarvis, cash)
-    jarvis.say("Your bet: $" + str(bet), Fore.RED)
+    jarvis.say(f"Your bet: ${str(bet)}", Fore.RED)
     print("")
 
     n = input("Press enter to spin roulette")
@@ -238,11 +239,11 @@ def fifth_choice(jarvis, cash):
     cash -= bet
 
     print("")
-    jarvis.say("Result: " + str(result), Fore.YELLOW)
+    jarvis.say(f"Result: {result}", Fore.YELLOW)
 
     if (choice == 1 and result >= 1 and result <= 18) or (choice == 2 and result >= 19 and result <= 36):
         cash += bet * 2
-        jarvis.say("WIN: " + str(bet * 2), Fore.GREEN)
+        jarvis.say(f"WIN: {str(bet * 2)}", Fore.GREEN)
     else:
         jarvis.say("YOU LOST")
 
@@ -256,7 +257,7 @@ def bet_two_choice(jarvis):
         try:
             print("")
             option = int(jarvis.input("Enter your choice: ", Fore.GREEN))
-            if option == 1 or option == 2:
+            if option in {1, 2}:
                 return option
             else:
                 jarvis.say(
@@ -271,7 +272,7 @@ def bet_three_choice(jarvis):
         try:
             print("")
             option = int(jarvis.input("Enter your choice: ", Fore.GREEN))
-            if option == 1 or option == 2 or option == 3:
+            if option in {1, 2, 3}:
                 return option
             else:
                 jarvis.say(

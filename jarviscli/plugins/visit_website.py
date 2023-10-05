@@ -74,4 +74,4 @@ class OpenWebsite:
 
     def fix_link(self):
         if not self.main_link.startswith('http'):
-            self.main_link = "https://" + self.main_link
+            self.main_link = f"https://{self.main_link}"

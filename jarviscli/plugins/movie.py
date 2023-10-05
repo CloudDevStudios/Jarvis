@@ -9,9 +9,7 @@ app = imdb.IMDb()
 def main(jarvis, movie):
     movie_id = search_movie(jarvis, movie)
 
-    if movie_id is None:
-        return None
-    return get_movie_by_id(movie_id)
+    return None if movie_id is None else get_movie_by_id(movie_id)
 
 
 @lru_cache(maxsize=50, typed=False)
@@ -153,17 +151,8 @@ def movie_search(jarvis, movie):
     if not results:
         return None
 
-    # get only movies from the results, filtering out TV series, etc
-    movie_results = []
-    for item in results:
-        if item['kind'] == 'movie':
-            movie_results.append(item)
-
-    if len(movie_results) > 5:
-        count = 5
-    else:
-        count = len(movie_results)
-
+    movie_results = [item for item in results if item['kind'] == 'movie']
+    count = min(len(movie_results), 5)
     jarvis.say('')
     space = ' '
     text = 'ID'
@@ -185,7 +174,7 @@ def movie_search(jarvis, movie):
     if input_id == '':
         return None
     if len(input_id) != 1:
-        return jarvis.say(Fore.RED + 'Please enter valid value')
+        return jarvis.say(f'{Fore.RED}Please enter valid value')
     elif input_id in '123456789':
         input_id = int(input_id)
     elif input_id == 'q':
@@ -193,7 +182,7 @@ def movie_search(jarvis, movie):
 
     # if entered input is out of the given list of ID's
     if (int(input_id) > count) or (int(input_id) < 1):
-        return jarvis.say(Fore.RED + 'Please enter id from the given list')
+        return jarvis.say(f'{Fore.RED}Please enter id from the given list')
 
     movie_id = movie_results[input_id - 1].movieID
     data = get_movie_by_id(movie_id)
@@ -205,7 +194,7 @@ def colorized_output(key, value):
     pretty print key value pair
     """
     green_text = Fore.GREEN + "{:<14}".format(key)
-    normal_text = Style.RESET_ALL + ": " + str(value)
+    normal_text = f"{Style.RESET_ALL}: {str(value)}"
     return green_text + normal_text
 
 
@@ -226,12 +215,12 @@ def get_movie_info(jarvis, data):
         if attribute in data:
             value = data[attribute]
 
-            if attribute == 'genres':
-                value = ', '.join(value)
-
             if attribute == 'cast':
                 lst = [person['name'] for person in value]
-                value = ', '.join(lst[0:3])
+                value = ', '.join(lst[:3])
+
+            elif attribute == 'genres':
+                value = ', '.join(value)
 
             if isinstance(value, list):
                 value = value[0]

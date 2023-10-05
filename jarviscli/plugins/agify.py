@@ -8,8 +8,8 @@ from plugin import plugin, require
 def agify(jarvis, s):
     """Tells the age of someone based on his name, powered by www.boredapi.com"""
 
-    if (s):
-        req = requests.get("https://api.agify.io?name=" + s)
+    if s:
+        req = requests.get(f"https://api.agify.io?name={s}")
         data = req.json()
         if data == "":
             jarvis.say("Sorry, an error occured", Fore.BLUE)

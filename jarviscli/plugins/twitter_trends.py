@@ -53,7 +53,7 @@ class TwitterTrends:
 
     def is_out_of_range(self, x: int) -> bool:
         upper_bound = len(self.countries) - 1
-        return (True if (x > upper_bound or x < 0) else False)
+        return x > upper_bound or x < 0
 
     def available_countries(self):
         """
@@ -119,7 +119,7 @@ class TwitterTrends:
         """
         URL = f"https://twitter-trends-api.azharimm.site{self.countries[country][1]}"
         json_text = self.get_json(URL)
-        trends = list()
+        trends = []
         # zero stands for the latest trends ranking
         trends_info = json_text["data"]["trends"][0]["data"]
         for trend in trends_info[:10]:
@@ -138,9 +138,10 @@ class TwitterTrends:
         country_name_position = 0
         for country_key in self.countries:
             self.jarvis.say(
-                f"{country_key:{2}}{'.':{2}}{self.countries[country_key][country_name_position].upper()}")
+                f"{country_key:2}{'.':2}{self.countries[country_key][country_name_position].upper()}"
+            )
 
     def display_trends(self, trends):
-        self.jarvis.say(f"     {'Trend':{24}}{'Tweets':{23}}")
+        self.jarvis.say(f"     {'Trend':24}{'Tweets':23}")
         for i, v in enumerate(trends):
-            self.jarvis.say(f"{i + 1:{2}}{'.':{3}}{v[0]:{25}}{v[1]:{25}}")
+            self.jarvis.say(f"{i + 1:2}{'.':3}{v[0]:25}{v[1]:25}")

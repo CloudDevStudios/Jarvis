@@ -13,7 +13,7 @@ class TestDirectionsTo(unittest.TestCase):
     def test_directions_with_start_and_destination_city(self, mock_directions):
         from_city = 'London'
         to_city = 'Manchester'
-        data = "from {} to {}".format(from_city, to_city)
+        data = f"from {from_city} to {to_city}"
         directions_to.main(data)
         mock_directions.assert_called_once_with(to_city, from_city)
 
@@ -21,7 +21,7 @@ class TestDirectionsTo(unittest.TestCase):
     def test_directions_with_destination_and_start_city(self, mock_directions):
         from_city = 'Madrid'
         to_city = 'Valencia'
-        data = "to {} from {}".format(to_city, from_city)
+        data = f"to {to_city} from {from_city}"
         directions_to.main(data)
         mock_directions.assert_called_once_with(to_city, from_city)
 
@@ -29,7 +29,7 @@ class TestDirectionsTo(unittest.TestCase):
     def test_directions_with_only_destination_city(self, mock_directions):
         from_city = 0
         to_city = 'Paris'
-        data = "to {}".format(to_city)
+        data = f"to {to_city}"
         directions_to.main(data)
         mock_directions.assert_called_once_with(to_city, from_city)
 

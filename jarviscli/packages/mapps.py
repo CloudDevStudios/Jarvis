@@ -26,7 +26,7 @@ def directions(to_city, from_city=0):
 
 def locate_me():
     hcity = get_location()['city']
-    print(Fore.BLUE + "You are at " + hcity + Fore.RESET)
+    print(f"{Fore.BLUE}You are at {hcity}{Fore.RESET}")
 
 
 def weather(city=None):
@@ -58,7 +58,7 @@ def weather(city=None):
 
     # check if the city entered is not found
     if 'message' in j and j['message'] == 'city not found':
-        print(Fore.BLUE + "City Not Found" + Fore.RESET)
+        print(f"{Fore.BLUE}City Not Found{Fore.RESET}")
         return False
 
     else:

@@ -57,12 +57,11 @@ class history:
         api_cfg = self._parse_config(config)
         # query to be sent to API
         query = self._generate_query(api_cfg)
-        # fetch result
-        result = self._get_data(jarvis, query, api_cfg)
-        if not result:
+        if result := self._get_data(jarvis, query, api_cfg):
+            # output data
+            self._print_result(jarvis, result)
+        else:
             return
-        # output data
-        self._print_result(jarvis, result)
 
     # manual for plugin
     def _print_help(self, jarvis):
@@ -104,12 +103,14 @@ class history:
         if len(string) < 3:
             return None
 
-        # iterate over each month and try to find such month that contains our string
-        # and also starts with it
-        for month in self.months:
-            if (string in month) and (month.index(string) == 0):
-                return month
-        return None
+        return next(
+            (
+                month
+                for month in self.months
+                if (string in month) and (month.index(string) == 0)
+            ),
+            None,
+        )
 
     # parses user given arguments and returns dictionary of configuration
     def _parse_arguments(self, args):
@@ -149,11 +150,14 @@ class history:
 
     # used to further parse given configuration and validate user arguments
     def _parse_config(self, config):
-        api_cfg = {self.KW.EVENT: None, self.KW.MONTH: None,
-                   self.KW.DAY: None, self.KW.KEYWORD: None, self.KW.ERROR: None}
+        api_cfg = {
+            self.KW.MONTH: None,
+            self.KW.DAY: None,
+            self.KW.KEYWORD: None,
+            self.KW.ERROR: None,
+            self.KW.EVENT: config[self.KW.EVENT],
+        }
 
-        # check for events
-        api_cfg[self.KW.EVENT] = config[self.KW.EVENT]
         if not api_cfg[self.KW.EVENT]:
             api_cfg[self.KW.EVENT] = random.choice(self.events)
 
@@ -199,9 +203,7 @@ class history:
             # otherwise it's string
             month = self.months.index(api_cfg[self.KW.MONTH]) + 1
 
-        # url = api.com/date/<month>/<day>
-        query_str = '{}/{}/{}'.format(self.url, month, day)
-        return query_str
+        return f'{self.url}/{month}/{day}'
 
     # send request and retrieves data from API
     def _get_data(self, jarvis, query, api_cfg):
@@ -237,15 +239,13 @@ class history:
     # prints result of query in a human readable way
     def _print_result(self, jarvis, result):
         # first line of output contains date of fact
-        jarvis.say('\nDate : {} of {}'.format(
-            result['date'], result['year']), Fore.BLUE)
+        jarvis.say(f"\nDate : {result['date']} of {result['year']}", Fore.BLUE)
 
         # second line contains information
-        jarvis.say('{} : {}'.format(result['type'], result['text']), Fore.BLUE)
+        jarvis.say(f"{result['type']} : {result['text']}", Fore.BLUE)
 
         # next lines will be links to external sources
         jarvis.say('External links : ', Fore.BLUE)
         result['links'] = result['links'][:self.MAX_LINK]
         for i in range(len(result['links'])):
-            jarvis.say('    {}). {}'.format(
-                i + 1, result['links'][i]['link']), Fore.BLUE)
+            jarvis.say(f"    {i + 1}). {result['links'][i]['link']}", Fore.BLUE)

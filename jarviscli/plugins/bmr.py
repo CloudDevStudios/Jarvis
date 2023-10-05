@@ -14,12 +14,11 @@ def bmr(jarvis, s):
     jarvis.say("Please enter your choice: ")
     choice = jarvis.input()
     while True:
-        if choice == "1" or choice == "2":
+        if choice in ["1", "2"]:
             break
-        else:
-            jarvis.say("Sorry, invalid input was given. Try again! \n")
-            jarvis.say("Please enter your choice: ")
-            choice = jarvis.input()
+        jarvis.say("Sorry, invalid input was given. Try again! \n")
+        jarvis.say("Please enter your choice: ")
+        choice = jarvis.input()
 
     if choice == "2":
         jarvis.say("\nBasal Metabolic Rate (BMR)", Fore.GREEN)
@@ -32,7 +31,7 @@ def bmr(jarvis, s):
     jarvis.say("What's your gender? (M/F)")
     while True:
         sex = jarvis.input()
-        if sex.upper() == "M" or sex.upper() == "F":
+        if sex.upper() in ["M", "F"]:
             break
         jarvis.say("Sorry, invalid input was given!"
                    "Please try again. (M/F)")
@@ -71,7 +70,7 @@ def bmr(jarvis, s):
     elif sex.upper() == 'M':
         bmr = (float(height) * 6.25) + (float(weight) * 9.99) - \
               (float(age) * 4.92) - 5
-    jarvis.say("BMR: " + str(bmr), Fore.GREEN)
+    jarvis.say(f"BMR: {str(bmr)}", Fore.GREEN)
     jarvis.say("\nNow that you know your BMR,\nwould you like to calculate "
                "your AMR too based on it?\n")
     jarvis.say("Active Metabolic Rate (AMR)", Fore.GREEN)
@@ -81,12 +80,11 @@ def bmr(jarvis, s):
     jarvis.say("Please enter your choice(Y/N): ")
     amr_choice = jarvis.input()
     while True:
-        if amr_choice.upper() == "Y" or amr_choice.upper() == "N":
+        if amr_choice.upper() in ["Y", "N"]:
             break
-        else:
-            jarvis.say("Sorry, invalid input was given. Try again! \n")
-            jarvis.say("Please enter your choice(Y/N): ")
-            amr_choice = jarvis.input()
+        jarvis.say("Sorry, invalid input was given. Try again! \n")
+        jarvis.say("Please enter your choice(Y/N): ")
+        amr_choice = jarvis.input()
 
     if amr_choice.upper() == "N":
         jarvis.say("Okay, bye!", Fore.BLUE)
@@ -101,20 +99,19 @@ def bmr(jarvis, s):
         while True:
             if exercise_level in level_choices:
                 break
-            else:
-                jarvis.say("Sorry, invalid input was given. Try again! \n")
-                jarvis.say("Please enter your choice: ")
-                exercise_level = jarvis.input()
+            jarvis.say("Sorry, invalid input was given. Try again! \n")
+            jarvis.say("Please enter your choice: ")
+            exercise_level = jarvis.input()
 
         if exercise_level == "1":
             amr = bmr * 1.2
-        if exercise_level == "2":
+        elif exercise_level == "2":
             amr = bmr * 1.375
-        if exercise_level == "3":
+        elif exercise_level == "3":
             amr = bmr * 1.55
-        if exercise_level == "4":
+        elif exercise_level == "4":
             amr = bmr * 1.725
-        if exercise_level == "5":
+        elif exercise_level == "5":
             amr = bmr * 1.9
 
-        jarvis.say("AMR: " + str(amr), Fore.GREEN)
+        jarvis.say(f"AMR: {str(amr)}", Fore.GREEN)

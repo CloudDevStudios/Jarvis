@@ -22,7 +22,7 @@ class CoronaInfo:
         else:
             corona_info = self.get_corona_info(s)
             if corona_info == "URLError":
-                jarvis.say(f"Result was not available at the moment. Try again!!", Fore.RED)
+                jarvis.say("Result was not available at the moment. Try again!!", Fore.RED)
             elif corona_info is None:
                 jarvis.say(f"Cant find the country \"{s}\"", Fore.RED)
             else:
@@ -57,14 +57,19 @@ class CoronaInfo:
             return "URLError"
         result = response.json()
         if country_name:
-            for country in result["Countries"]:
-                if (
-                    country_name == country["Country"].lower()
-                    or country_name == country["CountryCode"].lower()
-                    or country_name == country["Slug"].lower()
-                ):
-                    return country
-            return None
+            return next(
+                (
+                    country
+                    for country in result["Countries"]
+                    if country_name
+                    in [
+                        country["Country"].lower(),
+                        country["CountryCode"].lower(),
+                        country["Slug"].lower(),
+                    ]
+                ),
+                None,
+            )
         global_info = result["Global"]
         global_info["Country"] = "Worldwide"
         return result["Global"]

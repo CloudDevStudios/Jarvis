@@ -34,9 +34,9 @@ def generate_response(jarvis, output):
     lang_code = label.split('_')[-1]
     language = code_to_lang[lang_code]
     if score > 0.5:
-        jarvis.say('The language of the text is ' + language, Fore.GREEN)
+        jarvis.say(f'The language of the text is {language}', Fore.GREEN)
     elif score > 0.25:
-        jarvis.say("I'm not sure, but the language might be " + language, Fore.YELLOW)
+        jarvis.say(f"I'm not sure, but the language might be {language}", Fore.YELLOW)
     else:
         jarvis.say("I couldn't identify the language", Fore.BLUE)
 

@@ -26,16 +26,15 @@ def create_voice(self, gtts_status, rate=180):
 
     if gtts_status is True:
         return VoiceGTTS()
+    if IS_MACOS:
+        return VoiceMac()
+    elif IS_WIN:
+        return VoiceWin(rate)
     else:
-        if IS_MACOS:
-            return VoiceMac()
-        elif IS_WIN:
-            return VoiceWin(rate)
-        else:
-            try:
-                return VoiceLinux(rate)
-            except OSError:
-                return VoiceNotSupported()
+        try:
+            return VoiceLinux(rate)
+        except OSError:
+            return VoiceNotSupported()
 
 
 def remove_ansi_escape_seq(text):
@@ -74,7 +73,7 @@ class VoiceMac():
     def text_to_speech(self, speech):
         speech = remove_ansi_escape_seq(speech)
         speech = speech.replace("'", "\\'")
-        system('say $\'{}\''.format(speech))
+        system(f"say $\'{speech}\'")
 
 
 class Voice_general():

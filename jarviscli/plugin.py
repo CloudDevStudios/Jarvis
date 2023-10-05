@@ -72,8 +72,7 @@ def alias(*alias):
 
 
 def _yield_something(values):
-    for value in values:
-        yield value
+    yield from values
 
 
 class PluginStorage(object):
@@ -86,9 +85,7 @@ class PluginStorage(object):
     def get_plugins(self, name=None):
         if name is None:
             return self._sub_plugins
-        if name in self._sub_plugins:
-            return self._sub_plugins[name]
-        return None
+        return self._sub_plugins[name] if name in self._sub_plugins else None
 
     def change_with(self, plugin_new):
         plugin_new._sub_plugins = self._sub_plugins
@@ -144,12 +141,9 @@ class Plugin(pluginmanager.IPlugin, PluginStorage):
         """Set with @complete"""
         # return default complete() if possible
         if self.is_callable_plugin():
-            for complete in self._complete:
-                yield complete
-
+            yield from self._complete
         # yield each sub command
-        for complete in self.get_plugins().keys():
-            yield complete
+        yield from self.get_plugins().keys()
 
     def get_doc(self):
         """Parses plugin doc string"""
@@ -172,7 +166,7 @@ class Plugin(pluginmanager.IPlugin, PluginStorage):
 
         # sub command complete
         for name, sub_command in self.get_plugins().items():
-            doc += "\n-> {}: ".format(name)
+            doc += f"\n-> {name}: "
 
             sub_command_doc = sub_command.get_doc()
             sub_command_doc = sub_command_doc.split("-- Example:")
@@ -183,7 +177,7 @@ class Plugin(pluginmanager.IPlugin, PluginStorage):
             if '\n' not in sub_command_doc:
                 doc += sub_command_doc
             else:
-                extended_doc += "\n  {}:\n".format(name)
+                extended_doc += f"\n  {name}:\n"
                 extended_doc += sub_command_doc
                 if not sub_command_doc.endswith("\n"):
                     extended_doc += "\n"
@@ -209,7 +203,7 @@ class Plugin(pluginmanager.IPlugin, PluginStorage):
             else:
                 jarvis.get_api().say("Sorry, I could not recognise your command. Did you mean:")
                 for sub_command in self._sub_plugins.keys():
-                    jarvis.get_api().say("    * {} {}".format(self.get_name(), sub_command))
+                    jarvis.get_api().say(f"    * {self.get_name()} {sub_command}")
         else:
             command = sub_command.split()[0]
             new_s = " ".join(sub_command.split()[1:])

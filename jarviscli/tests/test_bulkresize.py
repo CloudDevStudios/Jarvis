@@ -38,7 +38,7 @@ class Bulkresize(PluginTest):
         self.assertFalse(actual)
 
     def test_list_contents(self):
-        expected_list = [DATA_PATH + 'images/' + 'dummy-man.jpg']
+        expected_list = [f'{DATA_PATH}images/dummy-man.jpg']
         test_path = os.path.join(DATA_PATH, 'images')
         actual = bulkresize.list_contents(test_path)
         self.assertListEqual(actual, expected_list)
@@ -80,15 +80,15 @@ class Bulkresize(PluginTest):
         self.assertFalse(actual)
 
     def test_spin(self):
-        self.queue_input(DATA_PATH + 'images/')
+        self.queue_input(f'{DATA_PATH}images/')
         self.queue_input('y')
-        self.queue_input(DATA_PATH + 'images/')
+        self.queue_input(f'{DATA_PATH}images/')
         self.queue_input('200')
         self.bulkresize_module.run(' ')
         actual = self.history_say().last_text()
         expected = 'Resizing Completed!! Thank you for using jarvis'
         self.assertEqual(actual, expected)
-        os.remove(DATA_PATH + 'images/0.jpg')
+        os.remove(f'{DATA_PATH}images/0.jpg')
 
 
 if __name__ == '__main__':

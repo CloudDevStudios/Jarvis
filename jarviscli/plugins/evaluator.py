@@ -75,13 +75,13 @@ def equations(jarvis, term):
 
     equations = []
     count = 1
-    user_input = jarvis.input('{}. Equation: '.format(count))
+    user_input = jarvis.input(f'{count}. Equation: ')
     while user_input != '':
         count += 1
         user_input = format_expression(user_input)
         user_input = remove_equals(jarvis, user_input)
         equations.append(user_input)
-        user_input = jarvis.input('{}. Equation: '.format(count))
+        user_input = jarvis.input(f'{count}. Equation: ')
 
     calc(
         jarvis,
@@ -204,7 +204,7 @@ def remove_equals(jarvis, equation):
         jarvis.say("Warning! More than one = detected!", Fore.RED)
         return equation
 
-    return "{} - ({})".format(split[0], split[1])
+    return f"{split[0]} - ({split[1]})"
 
 
 def format_expression(s):
@@ -233,18 +233,14 @@ def format_expression(s):
 
 
 def solve_y(s):
-    if 'y' in s:
-        y = sympy.Symbol('y')
-        try:
-            results = sympy.solve(s, y)
-        except NotImplementedError:
-            return 'unknown'
-        if len(results) == 0:
-            return '0'
-        else:
-            return results[0]
-    else:
-        return solve_y("({}) -y".format(s))
+    if 'y' not in s:
+        return solve_y(f"({s}) -y")
+    y = sympy.Symbol('y')
+    try:
+        results = sympy.solve(s, y)
+    except NotImplementedError:
+        return 'unknown'
+    return '0' if len(results) == 0 else results[0]
 
 
 def calc(jarvis, s, calculator=sympy.sympify, formatter=None, do_evalf=True):
@@ -338,12 +334,8 @@ def curvesketch(jarvis, s):
 
         try:
             isminmax = float(get_y(x, func=derivative_2))
-        except ValueError:
+        except (ValueError, TypeError):
             isminmax = None
-        except TypeError:
-            # probably complex number
-            isminmax = None
-
         if isminmax is None:
             minmax = "unknown"
         elif isminmax > 0:

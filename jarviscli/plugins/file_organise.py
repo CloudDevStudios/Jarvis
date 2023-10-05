@@ -17,37 +17,32 @@ class File_Organise():
         self.file_manage(jarvis)
 
     def source_path(self, jarvis, dir_name):
-        all_paths = []
         # Changing static path to get the home path from PATH variables.
         # The '/home' was causing script to exit with "file not found" error
         # on Darwin.
         home_dir = os.environ.get("HOME")
         user_name = os.environ.get("USER")
         home_path = home_dir.split(user_name)[0].rstrip('/')
+        all_paths = []
         for root in os.walk(home_path):
-            print(
-                Fore.LIGHTBLUE_EX
-                + "Searching in {}...".format(
-                    (root[0])[
-                        :70]),
-                end="\r")
+            print(f"{Fore.LIGHTBLUE_EX}Searching in {root[0][:70]}...", end="\r")
             sys.stdout.flush()
             if dir_name == root[0].split('/')[-1]:
                 all_paths.append(root[0])
 
         for i, path_info in enumerate(all_paths):
             print()
-            print("{}. {}".format(i + 1, path_info))
+            print(f"{i + 1}. {path_info}")
 
-        if len(all_paths) == 0:
-            print(Fore.LIGHTRED_EX + 'No directory found')
+        if not all_paths:
+            print(f'{Fore.LIGHTRED_EX}No directory found')
             exit()
 
         choice = int(jarvis.input('\nEnter the option number: '))
 
         if choice < 1 or choice > len(all_paths):
             path = ''
-            print(Fore.LIGHTRED_EX + 'Wrong choice entered')
+            print(f'{Fore.LIGHTRED_EX}Wrong choice entered')
             exit()
 
         else:
@@ -56,7 +51,7 @@ class File_Organise():
         return path
 
     def print_before(self, path):
-        print("Cleaning {} located at {}\n".format(path.split('/')[-1], path))
+        print(f"Cleaning {path.split('/')[-1]} located at {path}\n")
 
         print(Fore.LIGHTBLUE_EX + "Folders before cleaning\n" + Fore.RESET)
 

@@ -54,4 +54,4 @@ def whoami(jarvis, s):
         jarvis.say("There seems to be some awkward stuff ...?")
         return
 
-    os.system("id " + str(s))
+    os.system(f"id {str(s)}")

@@ -12,9 +12,7 @@ headers = {'X-Auth-Token': API_KEY}
 def fetch(route):
     r = requests.get(url + route, headers=headers)
     r = r.json()
-    if "errorCode" in r.keys():
-        return None
-    return r
+    return None if "errorCode" in r.keys() else r
 
 
 @require(network=True)
@@ -63,7 +61,7 @@ class Football():
                 option = int(jarvis.input("Enter your choice: ", Fore.GREEN))
                 if option == 3:
                     return
-                elif option == 1 or option == 2:
+                elif option in {1, 2}:
                     return options[option]
                 else:
                     jarvis.say(
@@ -88,8 +86,7 @@ class Football():
         # Print the list of competitions
         print()
         for i in range(r["count"]):
-            print("{}: {}, {}".format(
-                i + 1, comps[i]["name"], comps[i]["area"]["name"]))
+            print(f'{i + 1}: {comps[i]["name"]}, {comps[i]["area"]["name"]}')
         print("0: Exit")
         print()
         # Take input option
@@ -115,7 +112,7 @@ class Football():
         """
         # Fetch competition info)
         jarvis.spinner_start('Fetching ')
-        r = fetch("/competitions/{}/standings".format(compId))
+        r = fetch(f"/competitions/{compId}/standings")
         if r is None:
             jarvis.spinner_stop("Error in fetching data - try again later.", Fore.YELLOW)
             return
@@ -135,12 +132,9 @@ class Football():
             return
         if tables[0]["group"] is None:
             # League table - print top three
-            jarvis.say("First position:  {}".format(
-                tables[0]["table"][0]["team"]["name"]))
-            jarvis.say("Second position: {}".format(
-                tables[0]["table"][1]["team"]["name"]))
-            jarvis.say("Third position:  {}".format(
-                tables[0]["table"][2]["team"]["name"]))
+            jarvis.say(f'First position:  {tables[0]["table"][0]["team"]["name"]}')
+            jarvis.say(f'Second position: {tables[0]["table"][1]["team"]["name"]}')
+            jarvis.say(f'Third position:  {tables[0]["table"][2]["team"]["name"]}')
             print()
         # General case
         jarvis.say("Here are the full standings: ", Fore.BLUE)
@@ -152,7 +146,7 @@ class Football():
                 continue
             if table["group"] is not None:
                 # Group table - print the group name
-                print(Fore.BLUE + "GROUP " + table["group"][6] + Fore.RESET)
+                print(f"{Fore.BLUE}GROUP " + table["group"][6] + Fore.RESET)
                 print()
             stList = []
             for team in table["table"]:
@@ -171,7 +165,7 @@ class Football():
         """
         print()
         jarvis.spinner_start('Fetching ')
-        r = fetch("/matches?competitions={}".format(compId))
+        r = fetch(f"/matches?competitions={compId}")
         if r is None:
             jarvis.spinner_stop("Error in fetching data - try again later.", Fore.YELLOW)
             return
@@ -195,33 +189,30 @@ class Football():
         Helper function for formatting
         and printing match info
         """
-        lines = []
         # Get home and away team names
         homeTeam = match["homeTeam"]["name"].upper()
         awayTeam = match["awayTeam"]["name"].upper()
-        lines.append("{} vs {}".format(homeTeam, awayTeam))
+        lines = [f"{homeTeam} vs {awayTeam}"]
         # Get type and status of match
         group = match["group"]
         status = match["status"]
-        lines.append("Group:  {}".format(group))
-        lines.append("Status: {}".format(status.capitalize()))
+        lines.extend((f"Group:  {group}", f"Status: {status.capitalize()}"))
         # Get the scores
         if status != "SCHEDULED":
             # Get the score after 90 mins ordinary time
             scores = match["score"]
             homeScore = scores["fullTime"]["homeTeam"]
             awayScore = scores["fullTime"]["awayTeam"]
-            lines.append("SCORE: {} - {}".format(homeScore, awayScore))
+            lines.append(f"SCORE: {homeScore} - {awayScore}")
             if scores["extraTime"]["homeTeam"] is not None:
                 # Match went on to extra time
                 homeExtra = scores["extraTime"]["homeTeam"]
                 awayExtra = scores["extraTime"]["awayTeam"]
-                lines.append(
-                    "Extra time: {} - {}".format(homeExtra, awayExtra))
+                lines.append(f"Extra time: {homeExtra} - {awayExtra}")
             if scores["penalties"]["homeTeam"] is not None:
                 # Match went on to penalties
                 homePen = scores["penalties"]["homeTeam"]
                 awayPen = scores["penalties"]["awayTeam"]
-                lines.append("Penalties: {} - {}".format(homePen, awayPen))
+                lines.append(f"Penalties: {homePen} - {awayPen}")
         # Return list of lines
         return lines

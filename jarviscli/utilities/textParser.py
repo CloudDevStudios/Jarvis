@@ -90,7 +90,7 @@ def parse_date(string):
     skip = 0
     for index, d in enumerate(elements):
         if parse_day:
-            d += dt.today().strftime(" %Y %W")
+            d += dt.now().strftime(" %Y %W")
             try:
                 ret_date = dt.strptime(d, "%a %Y %W").date()
             except ValueError:
@@ -143,15 +143,15 @@ def parse_date(string):
         elif re.match("^[0-1][0-9]:[0-5][0-9][AP]M$", d):
             ret_time = dt.strptime(d, "%I:%M%p").time()
         elif re.match("^[1-9]:[0-5][0-9][AP]M$", d):
-            ret_time = dt.strptime("0" + d, "%I:%M%p").time()
+            ret_time = dt.strptime(f"0{d}", "%I:%M%p").time()
         elif re.match("^[0-2][0-9]:[0-5][0-9]$", d):
             ret_time = dt.strptime(d, "%H:%M").time()
         elif re.match("^[1-9]:[0-5][0-9]$", d):
-            ret_time = dt.strptime("0" + d, "%H:%M").time()
+            ret_time = dt.strptime(f"0{d}", "%H:%M").time()
 
         elif d == "next":
             parse_day = True
-        elif d == "in" or d == "and":
+        elif d in ["in", "and"]:
             parse_delta_value = True
         else:
             break

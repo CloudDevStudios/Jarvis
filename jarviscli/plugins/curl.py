@@ -51,10 +51,12 @@ class GenerateCurl(object):
             jarvis.say(text="Endpoint missing.", color=Fore.RED)
             jarvis.exit()
 
-        if self._valid_method(jarvis) and self._valid_content_type(jarvis) and \
-           self._valid_data(jarvis) and self._valid_endpoint(jarvis):
-            pass
-        else:
+        if (
+            not self._valid_method(jarvis)
+            or not self._valid_content_type(jarvis)
+            or not self._valid_data(jarvis)
+            or not self._valid_endpoint(jarvis)
+        ):
             jarvis.exit()
 
     def _valid_method(self, jarvis):
@@ -71,13 +73,13 @@ class GenerateCurl(object):
 
     def _valid_data(self, jarvis):
 
-        data = self._input_params["data"]
         content_type = self._input_params["content_type"]
 
         if content_type == 2:
             return True
 
         if content_type == 1:
+            data = self._input_params["data"]
             try:
                 json.loads(data)
                 return True
@@ -90,15 +92,12 @@ class GenerateCurl(object):
 
     def _generate_curl_request(self, jarvis):
 
-        curl_string = "curl "
-
-        curl_string += "-X{} ".format(self._input_params["method"])
-
+        curl_string = f'curl -X{self._input_params["method"]} '
         if self._input_params["content_type"] == 1:
             curl_string += '-H "Content-type: application/json" '
 
         if self._input_params["content_type"] != 2:
-            curl_string += " -d '{}'".format(self._input_params["data"])
+            curl_string += f""" -d '{self._input_params["data"]}'"""
 
-        curl_string += " '{}'".format(self._input_params["endpoint"])
+        curl_string += f""" '{self._input_params["endpoint"]}'"""
         jarvis.say(text=curl_string, color=Fore.GREEN)

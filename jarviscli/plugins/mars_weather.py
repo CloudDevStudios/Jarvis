@@ -18,9 +18,7 @@ def mars_weather(jarvis, s):
     r = fetch()
     x = r['sol_keys']
 
-    count = 0
-
-    for i in x:
+    for count, i in enumerate(x):
         dt = str(datetime.date.today() + datetime.timedelta(days=count))
         jarvis.say(dt, Fore.BLUE)
 
@@ -37,15 +35,11 @@ def mars_weather(jarvis, s):
         get_pressure(jarvis, r, i)
         print("")
 
-        count += 1
-
 
 def fetch():
     r = requests.get(url, headers=headers)
     r = r.json()
-    if "errorCode" in r.keys():
-        return None
-    return r
+    return None if "errorCode" in r.keys() else r
 
 
 def get_temperature(jarvis, fulldata, sol):

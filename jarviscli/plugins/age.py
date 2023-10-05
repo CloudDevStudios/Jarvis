@@ -7,9 +7,7 @@ def fetch(route):
     url = 'https://api.agify.io?name='
     r = requests.get(url + route)
     r = r.json()
-    if "errorCode" in r.keys():
-        return None
-    return r
+    return None if "errorCode" in r.keys() else r
 
 @require(network=True)
 @plugin('age')
@@ -30,6 +28,5 @@ class Age():
         jarvis.say("Give a name :", Fore.BLUE)
         print()
         while True:
-            option = str(jarvis.input("Enter your choice: ", Fore.GREEN))
-            return option
+            return str(jarvis.input("Enter your choice: ", Fore.GREEN))
         

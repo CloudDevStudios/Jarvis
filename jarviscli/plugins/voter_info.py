@@ -1,4 +1,5 @@
 """Jarvis plugin to get public voter information based on the users address."""
+
 import json
 import geopy
 import urllib.parse
@@ -12,7 +13,7 @@ from colorama import Fore
 from plugin import plugin
 
 DATA_PATH = os.path.abspath(os.path.dirname(__file__))
-DATA_PATH = DATA_PATH[:-8] + "/data"
+DATA_PATH = f"{DATA_PATH[:-8]}/data"
 KEY_JSON_FILE = "/Google_api_key.json"
 KEY = ""
 
@@ -24,7 +25,7 @@ def print_address(jarvis, location, address):
         if line == "state":
             break
         if address[line]:
-            site_info += str(address[line]) + ", "
+            site_info += f"{str(address[line])}, "
     site_info += address["state"] + " " + address["zip"]
     jarvis.say(site_info, Fore.RED)
     jarvis.say("Hours:", Fore.RED)
@@ -39,9 +40,9 @@ def get_voter_info(jarvis, s, address):
     # Formulate API request
     url = "https://www.googleapis.com/civicinfo/v2/voterinfo?key="
     url += KEY
-    url += "&address=" + urllib.parse.quote(str(address))
+    url += f"&address={urllib.parse.quote(str(address))}"
     if s:
-        url += "&electionId=" + s
+        url += f"&electionId={s}"
     result = requests.get(url)
     voterInfo = result.json()
 
@@ -123,7 +124,7 @@ def voter_info(jarvis, s):
     # Get user API key
     if not os.path.isfile(DATA_PATH + KEY_JSON_FILE):
         shutil.copy2(
-            DATA_PATH + "/sampleGoogle_api_key.json", DATA_PATH + KEY_JSON_FILE
+            f"{DATA_PATH}/sampleGoogle_api_key.json", DATA_PATH + KEY_JSON_FILE
         )
 
     with open(DATA_PATH + KEY_JSON_FILE) as json_file:
@@ -154,7 +155,7 @@ def voter_info(jarvis, s):
     address = geo.reverse(coordinates)
 
     # Verify location with user
-    user_check_location = "I have your location as " + str(address)
+    user_check_location = f"I have your location as {str(address)}"
     jarvis.say(user_check_location, Fore.RED)
     user_confirmation = jarvis.input("Is this correct? (yes/no)\n")
     if user_confirmation == "no":

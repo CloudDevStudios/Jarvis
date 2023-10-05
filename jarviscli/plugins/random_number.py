@@ -19,10 +19,7 @@ def generate_random_number(jarvis, numbers):
 
     """If the user change the order of input"""
     if higher_number < smallest_number:
-        aux = higher_number
-        higher_number = smallest_number
-        smallest_number = aux
-
+        higher_number, smallest_number = smallest_number, higher_number
     pre_text = 'Your random number in range [%d, %d] is' \
                % (smallest_number, higher_number)
     rand_number = random.randint(smallest_number, higher_number)

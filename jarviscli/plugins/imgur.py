@@ -16,7 +16,7 @@ else:
 
 
 def complete(text, state):
-    return (glob.glob(text + '*') + [None])[state]
+    return (glob.glob(f'{text}*') + [None])[state]
 
 
 @require(network=True)

@@ -47,7 +47,7 @@ class RollTest(PluginTest):
 
             # execute "roll" 500 times
             for _ in range(500):
-                d = [x for x in self.dice._dice_roll(config)]
+                d = list(self.dice._dice_roll(config))
 
                 # validate
                 self.assertEqual(len(d), repeat)

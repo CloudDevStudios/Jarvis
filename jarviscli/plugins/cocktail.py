@@ -104,8 +104,7 @@ class Cocktail:
         """
         # data is a list of str
         for number, d in enumerate(data):
-            self.jarvis.say(
-                f'{(number + 1):{3}}.  {d}')
+            self.jarvis.say(f'{number + 1:3}.  {d}')
 
     def display_cocktail_ingredients(self, ingredients, cocktail):
         """
@@ -114,11 +113,14 @@ class Cocktail:
 
         self.header_msg(f"ALL YOU NEED for {cocktail}")
 
-        self.jarvis.say(f'{"INGREDIENTS":{30}}{"MEASURE":{15}}'.center(
-            self.SCREEN_WIDTH), color=Fore.LIGHTGREEN_EX)
+        self.jarvis.say(
+            f"{'INGREDIENTS':30}{'MEASURE':15}".center(self.SCREEN_WIDTH),
+            color=Fore.LIGHTGREEN_EX,
+        )
         for ingredient in ingredients:
             self.jarvis.say(
-                f'{ingredient[0] :{30}}{ingredient[1]:{15}}'.center(self.SCREEN_WIDTH))
+                f'{ingredient[0]:30}{ingredient[1]:15}'.center(self.SCREEN_WIDTH)
+            )
 
     def display_cocktail_instructions(self, instructions: str):
         """
@@ -172,12 +174,12 @@ class Cocktail:
             return True
 
     def is_out_of_range(self, x: int, upper_bound) -> bool:
-        return (True if (x > upper_bound or x <= 0) else False)
+        return x > upper_bound or x <= 0
 
     def is_end(self):
         inp = self.jarvis.input(
             "Do you want to continue? (Y/N) ", color=Fore.RED)
-        if inp.lower() == "n" or inp.lower() == "exit":
+        if inp.lower() in ["n", "exit"]:
             return True
 
     def get_cocktail_ingredients(self, cocktail: int, cocktails):
@@ -188,13 +190,11 @@ class Cocktail:
         json_text = self.get_json(URL)['drinks'][0]
         cocktail_ingredients = []
         for i in range(1, 16):
-            ingredient = json_text[f'strIngredient{i}']
-            measure = json_text[f'strMeasure{i}']
-            if ingredient:
-                if not measure:
-                    cocktail_ingredients.append([ingredient, "Your pref."])
-                else:
+            if ingredient := json_text[f'strIngredient{i}']:
+                if measure := json_text[f'strMeasure{i}']:
                     cocktail_ingredients.append([ingredient, measure])
+                else:
+                    cocktail_ingredients.append([ingredient, "Your pref."])
         return cocktail_ingredients
 
     def get_cocktail_instructions(self, cocktail: int, cocktails):
@@ -202,8 +202,7 @@ class Cocktail:
         Get chosen cocktail's instructions.
         """
         URL = f"https://www.thecocktaildb.com/api/json/v1/1/search.php?s={cocktails[cocktail]}"
-        json_text = self.get_json(URL)['drinks'][0]["strInstructions"]
-        return json_text
+        return self.get_json(URL)['drinks'][0]["strInstructions"]
 
     def get_cocktails_by_ingredient(self, ingredients: int):
         """
@@ -211,5 +210,4 @@ class Cocktail:
         """
         URL = f"https://www.thecocktaildb.com/api/json/v1/1/filter.php?i={self.ingredients[ingredients]}"
         json_text = self.get_json(URL)["drinks"]
-        cocktails = [i["strDrink"] for i in json_text]
-        return cocktails
+        return [i["strDrink"] for i in json_text]

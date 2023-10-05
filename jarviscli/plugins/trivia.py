@@ -15,9 +15,9 @@ class trivia:
 
     def __call__(self, jarvis, s):
         trivia_fetch = self.get_trivia(jarvis)
-        question_type = trivia_fetch["results"][0]["type"]
         options = trivia_fetch["results"][0]["incorrect_answers"]
         if trivia_fetch is not None:
+            question_type = trivia_fetch["results"][0]["type"]
             if (question_type == "multiple"):
                 self.mcq_question(jarvis, trivia_fetch)
             else:
@@ -39,7 +39,7 @@ class trivia:
         else:
             question = trivia_fetch["results"][0]["question"]
             question = question.replace("&quot;", "\"")
-            jarvis.say("True/False: " + question)
+            jarvis.say(f"True/False: {question}")
             options = ["true", "false"]
             correct = trivia_fetch["results"][0]["correct_answer"]
             correct = correct.lower()
@@ -65,7 +65,7 @@ class trivia:
             question = trivia_fetch["results"][0]["question"]
             question = question.replace("&quot;", "\"")
             question = question.replace('&#039;', "'")
-            jarvis.say("Multiple Choice: " + question)
+            jarvis.say(f"Multiple Choice: {question}")
             options = trivia_fetch["results"][0]["incorrect_answers"]
             correct_answer = trivia_fetch["results"][0]["correct_answer"]
             options.append(correct_answer)
@@ -75,12 +75,12 @@ class trivia:
             for option in options:
                 option_count = option_count + 1
                 answersDict[str(option_count)] = option
-                jarvis.say(str(option_count) + ". " + option)
+                jarvis.say(f"{str(option_count)}. {option}")
             self.mcq_answer(jarvis, answersDict, correct_answer, option_count)
         return
 
     def mcq_answer(self, jarvis, answersDict, correctAnswer, maxCount):
-        answerPrompt = "Please enter an integer 1-" + str(maxCount)
+        answerPrompt = f"Please enter an integer 1-{str(maxCount)}"
         answer = jarvis.input(answerPrompt + "\n")
         while answer not in answersDict.keys():
             jarvis.say("Invalid option")
@@ -89,4 +89,4 @@ class trivia:
         if (userAnswer == correctAnswer):
             jarvis.say("Correct!!")
         else:
-            jarvis.say("Sorry, the correct answer was " + correctAnswer)
+            jarvis.say(f"Sorry, the correct answer was {correctAnswer}")

@@ -24,8 +24,8 @@ def speedtest(jarvis, s):
 
     # Print the results
     jarvis.say('Speed test results:', Fore.GREEN)
-    jarvis.say('Download: ' + pretty_speed(download_speed), Fore.GREEN)
-    jarvis.say('Upload: ' + pretty_speed(upload_speed), Fore.GREEN)
+    jarvis.say(f'Download: {pretty_speed(download_speed)}', Fore.GREEN)
+    jarvis.say(f'Upload: {pretty_speed(upload_speed)}', Fore.GREEN)
 
 
 def pretty_speed(speed):

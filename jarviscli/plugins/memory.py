@@ -36,7 +36,7 @@ class Memory:
             try:
                 jarvis.say("Press 1 for Yes. \nPress 2 for No.")
                 c = int(input("Your choice: "))
-                if c != 1 and c != 2:
+                if c not in [1, 2]:
                     raise ValueError('Please give a valid input')
                 break
             except ValueError:
@@ -61,10 +61,10 @@ class Memory:
             jarvis.say("Time ended.")
             guess = str(input("Type your guess:"))
             if guess == number:
-                jarvis.say("Correct guess of " + str(len(number)) + " digits")
+                jarvis.say(f"Correct guess of {len(number)} digits")
             else:
                 jarvis.say("Wrong guess.")
-                jarvis.say("You remembered " + str(len(number) - 1) + " digits")
+                jarvis.say(f"You remembered {str(len(number) - 1)} digits")
                 jarvis.say("Be sure to train again.")
                 lost = True
         return
@@ -78,5 +78,5 @@ class Memory:
         while (i <= len(number)):
             digit = str(random.randint(0, 9))
             new = new + digit
-            i = i + 1
+            i += 1
         return new

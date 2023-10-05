@@ -40,26 +40,22 @@ def moonphase(jarvis, s):
     details_text =  True
     # Illumination request
     if s == "illumination":
-        jarvis.say("Phase: "+ phasename)
-        jarvis.say("Illumination: " + f"{pos: .2%}")
-    # Art request
-    elif s == "art" or s == "ascii":
+        jarvis.say(f"Phase: {phasename}")
+        jarvis.say(f"Illumination: {pos: .2%}")
+    elif s in ["art", "ascii"]:
         jarvis.say(ascii_art(current_phase))
-    # Help request
     elif s == "help":
         jarvis.say(help_text())
         details_text = False
-    # Fullmoon request
-    elif s == "fullmoon" or s =="full":
+    elif s in ["fullmoon", "full"]:
         fullmoon_day = fullmoon_finder()
         details_text = False   
         fullmoon_text(fullmoon_day)
-    # Default request
     else:
-        jarvis.say("The current moon phase for today is: " + phasename)
-    
+        jarvis.say(f"The current moon phase for today is: {phasename}")
+
     # The next prints will appear only if the user request is about the current day
-    if details_text == True:
+    if details_text:
         # Links to nineplanets.org moon phase site
         jarvis.say("")
         jarvis.say("More details at:")
@@ -81,17 +77,17 @@ def fullmoon_finder(now=None):
       now = datetime.datetime.now()
     is_full = False
     extra_day = 0
-    while is_full == False:
-      new_date = now + datetime.timedelta(days=extra_day)
-      diff = new_date - datetime.datetime(2001, 1, 1)
-      days = dec(diff.days) + (dec(diff.seconds) / dec(86400))
-      lunations = dec("0.20439731") + (days * dec("0.03386319269"))
-      position = lunations % dec(1)
-      new_phase = phase_calculator(position)
-      if new_phase == 4:
-        is_full = True
-      else:
-        extra_day += 1
+    while not is_full:
+        new_date = now + datetime.timedelta(days=extra_day)
+        diff = new_date - datetime.datetime(2001, 1, 1)
+        days = dec(diff.days) + (dec(diff.seconds) / dec(86400))
+        lunations = dec("0.20439731") + (days * dec("0.03386319269"))
+        position = lunations % dec(1)
+        new_phase = phase_calculator(position)
+        if new_phase == 4:
+          is_full = True
+        else:
+          extra_day += 1
     return extra_day
 
 def fullmoon_text(fullmoon_day):
@@ -119,7 +115,7 @@ def phase_calculator(pos):
 
 # Prints a help message
 def help_text():
-    help_text = """
+    return """
     The moonphase plugin aims to inform the user about the current moon phase
 
 
@@ -133,7 +129,6 @@ def help_text():
 
     moonphase help: Prints this help prompt
     """
-    return help_text
 
 # Receives the current lunar phase in integer form and returns the current lunar phase's scientific name
 def phase(index):

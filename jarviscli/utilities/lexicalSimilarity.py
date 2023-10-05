@@ -12,15 +12,12 @@ def compare_word(targets, word, distance_penalty=0.0):
         used to find triggers at the beginning of a sentence.
     :return: Tuple of the index of the best match and the calculated score for this word.
     """
-    scores = list()
-    for index, e in enumerate(targets):
-        scores.append({"i": index, "s": score_word(
-            e, word) + index * distance_penalty})
+    scores = [
+        {"i": index, "s": score_word(e, word) + index * distance_penalty}
+        for index, e in enumerate(targets)
+    ]
     scores = sorted(scores, key=lambda k: (k["s"]))
-    if not scores:
-        return -1, -1
-    else:
-        return scores[0]["i"], scores[0]["s"]
+    return (-1, -1) if not scores else (scores[0]["i"], scores[0]["s"])
 
 
 def score_word(target, word):
@@ -44,7 +41,7 @@ def score_word(target, word):
     not_found = 0
     word = word.lower()
     target = list(target.lower())
-    index_list = list()
+    index_list = []
     for e in word:
         index = find_letter(target, e, last_index)
         if index == -1 or index in index_list:
@@ -89,7 +86,7 @@ def compare_sentence(targets, sentence):
     :return: Triple of the index of the best match, score for that
         match and list of used words (as indices) from the target
     """
-    scores = list()
+    scores = []
     for index, e in enumerate(targets):
         score, index_list = score_sentence(e, sentence)
         scores.append({"i": index, "s": score, "l": index_list})
@@ -117,7 +114,7 @@ def score_sentence(target, sentence, distance_penalty=0,
     score = 0
     not_found = 0
     found = 0
-    index_list = list()
+    index_list = []
     target = target.split()
     sentence = sentence.split()
     for e in sentence:
@@ -168,8 +165,8 @@ def find_word(words, w, index, distance_penalty=0.0):
             index_offset = index - index_offset - 1
         else:
             rel_score = 2
-        if rel_score > 1:
-            index_offset = -1
+    if rel_score > 1:
+        index_offset = -1
     return index_offset, rel_score
 
 

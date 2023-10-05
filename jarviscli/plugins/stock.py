@@ -27,10 +27,7 @@ class Stock:
             ps = s.split()
             if ps[0] == 'getid':
                 ps.pop(0)
-                if ps:
-                    name = ' '.join(ps)
-                else:
-                    name = jarvis.input("Enter the name of the stock: ")
+                name = ' '.join(ps) if ps else jarvis.input("Enter the name of the stock: ")
                 self.get_stock_id(jarvis, name)
             elif ps[0] == 'profile':
                 if(len(ps) != 2):
@@ -48,13 +45,12 @@ class Stock:
                 self.get_gainers(jarvis)
             elif ps[0] == 'losers':
                 self.get_losers(jarvis)
-            # anything else is treated as a stock symbol
             else:
                 self.get_stock_data(jarvis, s)
 
     def get_stock_data(self, jarvis, quote):
         ''' Given a stock symbol, get the real time price of the stock '''
-        url = 'https://financialmodelingprep.com/api/v3/stock/real-time-price/' + quote
+        url = f'https://financialmodelingprep.com/api/v3/stock/real-time-price/{quote}'
         resp = requests.get(url)
 
         if(resp.status_code == 200):
@@ -95,54 +91,48 @@ class Stock:
 
     def get_profile(self, jarvis, symbol):
         ''' Given a stock symbol get the company profile '''
-        url = 'https://financialmodelingprep.com/api/v3/company/profile/' + symbol
+        url = f'https://financialmodelingprep.com/api/v3/company/profile/{symbol}'
         resp = requests.get(url)
 
-        if(resp.status_code == 200):
-            data = resp.json()
-            if(not data):
-                jarvis.say("Cannot find details for " + symbol, Fore.RED)
-            else:
-                jarvis.say(" Symbol      : " + data['symbol'], Fore.GREEN)
-                jarvis.say(" Company     : " + data['profile']['companyName'], Fore.GREEN)
-                jarvis.say(" Industry    : " + data['profile']['industry'], Fore.GREEN)
-                jarvis.say(" Sector      : " + data['profile']['sector'], Fore.GREEN)
-                jarvis.say(" Website     : " + data['profile']['website'], Fore.GREEN)
-                jarvis.say(" Exchange    : " + data['profile']['exchange'], Fore.GREEN)
-                jarvis.say(" Description : " + data['profile']['description'], Fore.GREEN)
+        if (resp.status_code == 200) and (data := resp.json()):
+            jarvis.say(" Symbol      : " + data['symbol'], Fore.GREEN)
+            jarvis.say(" Company     : " + data['profile']['companyName'], Fore.GREEN)
+            jarvis.say(" Industry    : " + data['profile']['industry'], Fore.GREEN)
+            jarvis.say(" Sector      : " + data['profile']['sector'], Fore.GREEN)
+            jarvis.say(" Website     : " + data['profile']['website'], Fore.GREEN)
+            jarvis.say(" Exchange    : " + data['profile']['exchange'], Fore.GREEN)
+            jarvis.say(" Description : " + data['profile']['description'], Fore.GREEN)
 
         else:
-            jarvis.say("Cannot find details for " + symbol, Fore.RED)
+            jarvis.say(f"Cannot find details for {symbol}", Fore.RED)
 
     def get_financial_stmt(self, jarvis, symbol):
         ''' Get the last annual financial statement of a company given it's stock symbol '''
-        url = 'https://financialmodelingprep.com/api/v3/financials/income-statement/' + symbol
+        url = f'https://financialmodelingprep.com/api/v3/financials/income-statement/{symbol}'
         resp = requests.get(url)
 
-        if(resp.status_code == 200):
-            data = resp.json()
-            if(not data):
-                jarvis.say("Cannot find details for: " + symbol, Fore.RED)
-            else:
+        if (resp.status_code == 200):
+            if data := resp.json():
                 for key in data['financials'][0].keys():
-                    jarvis.say(key + " => " + data['financials'][0][key], Fore.GREEN)
+                    jarvis.say(f"{key} => " + data['financials'][0][key], Fore.GREEN)
+            else:
+                jarvis.say(f"Cannot find details for: {symbol}", Fore.RED)
         else:
-            jarvis.say("Cannot find details for " + symbol, Fore.RED)
+            jarvis.say(f"Cannot find details for {symbol}", Fore.RED)
 
     def get_gainers(self, jarvis):
         ''' Get the most gainers of the day '''
         url = 'https://financialmodelingprep.com/api/v3/stock/gainers'
         resp = requests.get(url)
 
-        if(resp.status_code == 200):
-            data = resp.json()
-            if(not data):
-                jarvis.say("Cannot find details at this moment.", Fore.RED)
-            else:
+        if (resp.status_code == 200):
+            if data := resp.json():
                 for gainer in data['mostGainerStock']:
                     jarvis.say(gainer['ticker'] + " | " + gainer['companyName'], Fore.GREEN)
                     jarvis.say("Price: " + str(gainer['price']) + " | Change: " + str(gainer['changes']), Fore.GREEN)
                     jarvis.say("Percent gained: " + str(gainer['changesPercentage'])[1:-1] + "\n\n", Fore.GREEN)
+            else:
+                jarvis.say("Cannot find details at this moment.", Fore.RED)
         else:
             jarvis.say("Cannot get gainers list at the moment")
 
@@ -151,14 +141,13 @@ class Stock:
         url = 'https://financialmodelingprep.com/api/v3/stock/losers'
         resp = requests.get(url)
 
-        if(resp.status_code == 200):
-            data = resp.json()
-            if(not data):
-                jarvis.say("Cannot find details at the moment.", Fore.RED)
-            else:
+        if (resp.status_code == 200):
+            if data := resp.json():
                 for loser in data['mostLoserStock']:
                     jarvis.say(loser['ticker'] + " | " + loser['companyName'], Fore.GREEN)
                     jarvis.say("Price: " + str(loser['price']) + " | Change: " + str(loser['changes']), Fore.GREEN)
                     jarvis.say("Percent lost: " + str(loser['changesPercentage'])[1:-1] + "\n\n", Fore.GREEN)
+            else:
+                jarvis.say("Cannot find details at the moment.", Fore.RED)
         else:
             jarvis.say("Cannot get losers list at the moment")

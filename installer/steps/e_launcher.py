@@ -23,10 +23,8 @@ source "{PATH}/env/bin/activate"
 python "{PATH}/jarviscli" "$@"
     """
 
-    fw = open('jarvis', 'w')
-    fw.write(JARVIS_MACRO.format(PATH=os.getcwd()))
-    fw.close()
-
+    with open('jarvis', 'w') as fw:
+        fw.write(JARVIS_MACRO.format(PATH=os.getcwd()))
     shell('chmod +x jarvis').should_not_fail()
     # get the SHELL of the current user
     user_shell = get_default_shell()
@@ -34,8 +32,8 @@ python "{PATH}/jarviscli" "$@"
     install_options = [("Install jarvis /usr/local/bin starter (requires root)", 0), ]
     if user_shell in SUPPORTED_SHELLS:
         install_options += [
-            ("Add {} to $PATH (.{}rc)".format(os.getcwd(), user_shell, ), 1),
-            (_do_nothing_str, 2)
+            (f"Add {os.getcwd()} to $PATH (.{user_shell}rc)", 1),
+            (_do_nothing_str, 2),
         ]
     else:
         install_options += [
@@ -46,29 +44,27 @@ python "{PATH}/jarviscli" "$@"
     if selection == 0:
         os.system('sudo cp jarvis /usr/local/bin')
     elif selection == 1 and user_shell in SUPPORTED_SHELLS:
-        line_to_add = 'export PATH="$PATH:{}"'.format(os.getcwd())
-        shell_rc = '{}/.{}rc'.format(expanduser("~"), user_shell)
+        line_to_add = f'export PATH="$PATH:{os.getcwd()}"'
+        shell_rc = f'{expanduser("~")}/.{user_shell}rc'
 
         if not os.path.exists(shell_rc):
-            print("NO .{}rc found!".format(user_shell))
+            print(f"NO .{user_shell}rc found!")
         else:
             line_already_exists = False
 
             fr = open(shell_rc)
-            for line in fr.readlines():
+            for line in fr:
                 if line.startswith(line_to_add):
                     line_already_exists = True
 
             if line_already_exists:
-                print("Jarvis path already added to $PATH in .{}rc!".format(user_shell))
+                print(f"Jarvis path already added to $PATH in .{user_shell}rc!")
             else:
-                fw = open(shell_rc, 'a')
-                fw.write(line_to_add)
-                fw.write('\n')
-                fw.close()
-
+                with open(shell_rc, 'a') as fw:
+                    fw.write(line_to_add)
+                    fw.write('\n')
     printlog('\n\nInstallation complete. Try using Jarvis!')
     if selection == 0 or (selection == 1 and user_shell in SUPPORTED_SHELLS):
         printlog('$ jarvis')
     else:
-        printlog('$ {}/jarvis'.format(os.getcwd()))
+        printlog(f'$ {os.getcwd()}/jarvis')

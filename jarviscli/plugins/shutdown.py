@@ -17,7 +17,7 @@ def shutdown_LINUX(jarvis, s):
         os.system('sudo shutdown -c')
         jarvis.say('Shutdown operation cancelled')
         return
-    string = 'sudo shutdown -t ' + str(s)
+    string = f'sudo shutdown -t {str(s)}'
     os.system(string)
 
 
@@ -36,7 +36,7 @@ def shutdown_MACOS(jarvis, s):
         os.system('sudo killall shutdown')
         jarvis.say('Shutdown operation cancelled')
         return
-    string = 'sudo shutdown -h +' + str(s)
+    string = f'sudo shutdown -h +{str(s)}'
     os.system(string)
 
 
@@ -55,7 +55,7 @@ def shutdown_WIN32(jarvis, s):
         os.system('shutdown /a')
         jarvis.say('Shutdown operation cancelled')
         return
-    string = 'sudo shutdown /s /t ' + str(s)
+    string = f'sudo shutdown /s /t {str(s)}'
     os.system(string)
 
 
@@ -65,7 +65,7 @@ def reboot_LINUX(jarvis, s):
     """Reboot the system"""
     if s == '':
         s = jarvis.input('In how many minutes?: ')
-    string = 'sudo shutdown -r -t ' + str(s)
+    string = f'sudo shutdown -r -t {str(s)}'
     os.system(string)
 
 
@@ -90,7 +90,7 @@ def reboot_WIN32(jarvis, s):
     """Reboot the system"""
     if s == '':
         s = jarvis.input('In how many seconds?: ')
-    string = 'shutdown /r /t ' + str(s)
+    string = f'shutdown /r /t {str(s)}'
     os.system(string)
 
 

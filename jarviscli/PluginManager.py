@@ -94,10 +94,7 @@ class PluginManager(object):
             if not isinstance(plugin_to_validate, pluginmanager.IPlugin):
                 return False
 
-            if plugin_to_validate.get_name() == "plugin":
-                return False
-
-            return True
+            return plugin_to_validate.get_name() != "plugin"
 
         return partition(plugins)
 
@@ -208,7 +205,7 @@ class PluginDependency(object):
             self._requirement_platform = plugin.LINUX
         else:
             self._requirement_platform = None
-            warning("Unsupported platform {}".format(sys.platform))
+            warning(f"Unsupported platform {sys.platform}")
 
     def _plugin_get_requirements(self, requirements_iter):
         plugin_requirements = {
@@ -222,13 +219,13 @@ class PluginDependency(object):
             key = requirement[0]
             values = requirement[1]
 
-            if isinstance(values, str) or isinstance(values, bool):
+            if isinstance(values, (str, bool)):
                 values = [values]
 
             if key in plugin_requirements:
                 plugin_requirements[key].extend(values)
             else:
-                warning("{}={}: No supported requirement".format(key, values))
+                warning(f"{key}={values}: No supported requirement")
 
         return plugin_requirements
 
@@ -240,16 +237,13 @@ class PluginDependency(object):
 
         if not self._check_platform(plugin_requirements["platform"]):
             required_platform = ", ".join(plugin_requirements["platform"])
-            return "Requires os {}".format(required_platform)
+            return f"Requires os {required_platform}"
 
         if not self._check_network(plugin_requirements["network"], plugin):
             return "Requires networking"
 
         natives_ok = self._check_native(plugin_requirements["native"], plugin)
-        if natives_ok is not True:
-            return natives_ok
-
-        return True
+        return natives_ok if natives_ok is not True else True
 
     def _check_platform(self, values):
         if not values:

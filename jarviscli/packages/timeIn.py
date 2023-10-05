@@ -8,27 +8,23 @@ from colorama import Fore
 # this sets the path to the modules directory not the directory it was
 # call from
 module_path = os.path.dirname(__file__)
-module_path = module_path + '/../data/'
+module_path = f'{module_path}/../data/'
 
 
 def main(self, s):
     # Trims input s to be just the city/region name
     s = s.replace('time ', '').replace('in ', '')
 
-    exists = os.path.isfile(module_path + 'key_timein.json')
+    exists = os.path.isfile(f'{module_path}key_timein.json')
     if not exists:
         shutil.copy2(
-            module_path
-            + 'samplekey_timein.json',
-            module_path
-            + 'key_timein.json')
+            f'{module_path}samplekey_timein.json',
+            f'{module_path}key_timein.json',
+        )
         print(
-            Fore.RED
-            + "Generate api key here: https://developers.google.com/maps/documentation/geocoding/start?hl=en_US")
-        print(
-            Fore.RED
-            + "and add it to jarviscli/data/key_timein.json"
-            + Fore.RESET)
+            f"{Fore.RED}Generate api key here: https://developers.google.com/maps/documentation/geocoding/start?hl=en_US"
+        )
+        print(f"{Fore.RED}and add it to jarviscli/data/key_timein.json{Fore.RESET}")
         return
 
     # Transforms a city name into coordinates using Google Maps API
@@ -43,8 +39,8 @@ def main(self, s):
     )
     r = requests.get(send_url)
     j = json.loads(r.text)
-    time = j['formatted']
     self.dst = j['dst']
+    time = j['formatted']
     # Prints current date and time as YYYY-MM-DD HH:MM:SS
     print("{COLOR}The current date and time in {LOC} is: {TIME}{COLOR_RESET}"
           .format(COLOR=Fore.MAGENTA, COLOR_RESET=Fore.RESET,
@@ -52,11 +48,11 @@ def main(self, s):
 
 
 def getLocation(s):
-    file_path = module_path + 'key_timein.json'
+    file_path = f'{module_path}key_timein.json'
     with open(file_path) as json_file:
         data = json.load(json_file)
     if 'timein' not in data or data['timein'] == 'insertyourkeyhere':
-        print(Fore.RED + "API key not added")
+        print(f"{Fore.RED}API key not added")
         print(
             Fore.RED
             + "Generate api key here: https://developers.google.com/maps/documentation/geocoding/start?hl=en_US")

@@ -16,7 +16,7 @@ def main(data):
     """
     word_list = data.split()
     try:
-        things = " ".join(word_list[0:word_list.index("|")])
+        things = " ".join(word_list[:word_list.index("|")])
     except ValueError:
         cmd = CmdInterpreter.CmdInterpreter("", "")
         cmd.help_near()

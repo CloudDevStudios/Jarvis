@@ -70,19 +70,20 @@ def open_spotify(jarvis, s):
         # dictionary for storing the urls based on every mood
         # url is defined by the main url
         # plus the unique ending of each url
-        url_dict = {"1": url + "3IBrsav3Sh8AImtaGoaP07",
-                    "2": url + "37i9dQZF1DWSf2RDTDayIx",
-                    "3": url + "4MKC0zUOwvz5gGfKX93LV1",
-                    "4": url + "190wZ2oVo7MTrBvNlPiub2",
-                    "5": url + "37i9dQZF1DWZLcGGC0HJbc",
-                    "6": url + "37i9dQZF1DX889U0CL85jj",
-                    "7": url + "0l0a4uSRYz0VWnt38VAEzR",
-                    "8": url + "0Au3b2NB5uz8Iwwx5sl6K5",
-                    "9": url + "37i9dQZF1DX0SM0LYsmbMT",
-                    "10": url + "37i9dQZF1DXbTxeAdrVG2l",
-                    "11": url + "37i9dQZF1DWXe9gFZP0gtP",
-                    "12": url + "3c0Nv5CY6TIaRszlTZbUFk",
-                    }
+        url_dict = {
+            "1": f"{url}3IBrsav3Sh8AImtaGoaP07",
+            "2": f"{url}37i9dQZF1DWSf2RDTDayIx",
+            "3": f"{url}4MKC0zUOwvz5gGfKX93LV1",
+            "4": f"{url}190wZ2oVo7MTrBvNlPiub2",
+            "5": f"{url}37i9dQZF1DWZLcGGC0HJbc",
+            "6": f"{url}37i9dQZF1DX889U0CL85jj",
+            "7": f"{url}0l0a4uSRYz0VWnt38VAEzR",
+            "8": url + "0Au3b2NB5uz8Iwwx5sl6K5",
+            "9": url + "37i9dQZF1DX0SM0LYsmbMT",
+            "10": url + "37i9dQZF1DXbTxeAdrVG2l",
+            "11": url + "37i9dQZF1DWXe9gFZP0gtP",
+            "12": url + "3c0Nv5CY6TIaRszlTZbUFk",
+        }
         # opens the Spotify Web Player
         webbrowser.open(url_dict[mood])
         jarvis.say("Changed your mood?")

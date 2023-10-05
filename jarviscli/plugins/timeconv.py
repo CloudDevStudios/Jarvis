@@ -98,28 +98,19 @@ class timeconv():
 
         if ((end - start) < 0):
             reverse = True
-            tmp = start
-            start = end
-            end = tmp
-
+            start, end = end, start
         multiplier = 1
 
         convamount = multiplier
 
         for i in range(start, end, 1):
-            kbuild = self.time_units[i] + "2" + self.time_units[i + 1]
+            kbuild = f"{self.time_units[i]}2{self.time_units[i + 1]}"
             multiplier = multiplier * self.units_data.get(kbuild)
 
         mulitplier = round(multiplier, 17)
 
-        if reverse:
-            convamount = (1 / multiplier) * amount
-        else:
-            convamount = multiplier * amount
-
-        convamount = round(convamount, 12)
-
-        return convamount
+        convamount = (1 / multiplier) * amount if reverse else multiplier * amount
+        return round(convamount, 12)
 
     def get_units(self, jarvis, prompt):
 
@@ -127,22 +118,19 @@ class timeconv():
             u = jarvis.input(prompt).lower()
             if u in self.time_units:
                 return u
-            else:
-                prompt = 'Please enter a valid unit: '
-                continue
+            prompt = 'Please enter a valid unit: '
+            continue
 
     def txt_build(self, amount, convamount, from_unit, to_unit):
 
         if (amount == 1):
             fromdisp = self.units.get(from_unit)
         else:
-            fromdisp = self.units.get(from_unit) + "s"
+            fromdisp = f"{self.units.get(from_unit)}s"
 
         if (convamount == 1):
             todisp = self.units.get(to_unit)
         else:
-            todisp = self.units.get(to_unit) + "s"
+            todisp = f"{self.units.get(to_unit)}s"
 
-        txt = str(amount) + " " + fromdisp + " is equal to " + str(convamount) + " " + todisp
-
-        return txt
+        return f"{str(amount)} {fromdisp} is equal to {str(convamount)} {todisp}"

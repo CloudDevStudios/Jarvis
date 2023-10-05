@@ -73,9 +73,9 @@ def dictionary(jarvis, s):
         jarvis.say('')
         jarvis.say('== {}. =='.format(detail_id))
         jarvis.say("Meaning  : {}".format(meaning.definition()))
-        if len(synonyms) > 0:
+        if synonyms:
             jarvis.say("Synonyms : {}".format(", ".join(synonyms)))
-        if len(antonyms) > 0:
+        if antonyms:
             jarvis.say("Antonyms : {}".format(", ".join(antonyms)))
         if len(examples) > 0:
             if len(examples) == 1:

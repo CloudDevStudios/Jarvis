@@ -33,7 +33,7 @@ class Wiki():
             if isinstance(data, list):
                 print("\nDid you mean one of these pages?\n")
                 for d in range(len(data)):
-                    print(str(d + 1) + ": " + data[d])
+                    print(f"{str(d + 1)}: {data[d]}")
             else:
                 print("\n" + data)
 

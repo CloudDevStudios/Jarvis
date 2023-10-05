@@ -24,8 +24,8 @@ def hangman(jarvis, s):
                 continue
         actualWordToGuess = actualWordToGuess.lower()
         wordToGuess = ""
-        for x in range(len(actualWordToGuess)):
-            wordToGuess = wordToGuess + "_"
+        for _ in range(len(actualWordToGuess)):
+            wordToGuess = f"{wordToGuess}_"
         while True:
             if lives == 0:
                 print("You Lost!\n")
@@ -33,7 +33,7 @@ def hangman(jarvis, s):
             if actualWordToGuess == wordToGuess:
                 print("You Won!\n")
                 break
-            print("Word To Guess Looks Like This : " + wordToGuess + "\n")
+            print(f"Word To Guess Looks Like This : {wordToGuess}" + "\n")
             guess = input("Enter Your Guess : ")
             print("\n")
             guess = guess.strip()
@@ -44,25 +44,25 @@ def hangman(jarvis, s):
             if len(guess) == 0:
                 print("Woops! You Have Not Entered Anything\n")
                 lives = lives - 1
-                print("Penalty! Lives Decrease By 1, Remains : " + str(lives) + "\n")
+                print(f"Penalty! Lives Decrease By 1, Remains : {str(lives)}" + "\n")
                 drawStickMan(8 - lives)
                 continue
             if len(guess) > 1:
                 print("Woops! You Have Entered Input Longer Than Character Size\n")
                 lives = lives - 1
-                print("Penalty! Lives Decrease By 1, Remains : " + str(lives) + "\n")
+                print(f"Penalty! Lives Decrease By 1, Remains : {str(lives)}" + "\n")
                 drawStickMan(8 - lives)
                 continue
             if guess in usedLetters:
                 print("Woops! You Have Entered Letter That Is Already Used\n")
                 lives = lives - 1
-                print("Penalty! Lives Decrease By 1, Remains : " + str(lives) + "\n")
+                print(f"Penalty! Lives Decrease By 1, Remains : {str(lives)}" + "\n")
                 drawStickMan(8 - lives)
                 continue
             if guess not in actualWordToGuess:
                 print("Woops! You Have Entered Wrong Guess\n")
                 lives = lives - 1
-                print("Penalty! Lives Decrease By 1, Remains : " + str(lives) + "\n")
+                print(f"Penalty! Lives Decrease By 1, Remains : {str(lives)}" + "\n")
                 drawStickMan(8 - lives)
                 continue
             if guess.lower() in actualWordToGuess:
@@ -78,7 +78,7 @@ def hangman(jarvis, s):
                     newWordToGuess = newWordToGuess + wordToGuess[position]
             wordToGuess = newWordToGuess
 
-        print("Word To Guess Was : " + actualWordToGuess.upper())
+        print(f"Word To Guess Was : {actualWordToGuess.upper()}")
         terminateFlag = continueOrNot()
 
     goodByeText = "#########################################\n" \
@@ -94,7 +94,7 @@ def continueOrNot():
     print("\n")
     desire = desire.strip()
     desire = desire.lower()
-    while desire != "n" and desire != "y":
+    while desire not in ["n", "y"]:
         desire = input("Enter proper answer! (Y/N) ")
         print("\n")
         desire = desire.strip()
@@ -122,11 +122,9 @@ def drawStickMan(phaseMain):
             stickman = stickman + "   |   |  \n"
         elif phase == 4:
             stickman = stickman + "   |  ---\n"
-        elif phase == 5:
-            stickman = stickman + "   | |   |\n"
-        elif phase == 6:
+        elif phase in {5, 6}:
             stickman = stickman + "   | |   |\n"
         elif phase == 7:
             stickman = stickman + "   |__   __\n"
-        phase = phase + 1
+        phase += 1
     print(stickman)

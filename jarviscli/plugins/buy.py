@@ -49,26 +49,20 @@ def shop(shopName):
 
 
 def generateURL(startingURL, searchTerm, splitted):
-    if(splitted):
-        splittedTerm = searchTerm
-    else:
-        splittedTerm = searchTerm.split(" ")
+    splittedTerm = searchTerm if splitted else searchTerm.split(" ")
     counter = 0
     for word in splittedTerm:
         if len(word) > 0:
-            if counter == 0:
-                startingURL += word
-                counter += 1
-            else:
-                startingURL += '+' + word
-                counter += 1
+            startingURL += word if counter == 0 else f'+{word}'
+            counter += 1
     return startingURL
 
 
 # Call if one line command is uses
 def oneLineCommand(shop_input, search_term):
-    endURL = ""
     startingURL = shop(shop_input)
-    if len(startingURL) > 0:
-        endURL = generateURL(startingURL, search_term, True)
-    return endURL
+    return (
+        generateURL(startingURL, search_term, True)
+        if len(startingURL) > 0
+        else ""
+    )

@@ -65,15 +65,12 @@ class Geocoder:
             self.jarvis.say("The geocoding service appears to be unavailable."
                             " Please try again later.", Fore.RED)
 
-        # Request succeeded
         else:
             self.output = self.parse_response(self.response)
 
             if self.output:
                 for result in self.output:
-                    self.jarvis.say("{}: {}".format(result,
-                                                    self.output[result]),
-                                    Fore.CYAN)
+                    self.jarvis.say(f"{result}: {self.output[result]}", Fore.CYAN)
 
             else:
                 self.jarvis.say("No matching addresses found.", Fore.RED)
@@ -88,9 +85,7 @@ class Geocoder:
         str
             URL for the geocoding API using the input address
         """
-        return ("https://geocoding.geo.census.gov/geocoder/locations/"
-                "onelineaddress?address={}&benchmark=Public_AR_Current&format="
-                "json".format(self.cleaned_addr))
+        return f"https://geocoding.geo.census.gov/geocoder/locations/onelineaddress?address={self.cleaned_addr}&benchmark=Public_AR_Current&format=json"
 
     def help(self):
         """Print the help prompt for the plugin"""
@@ -115,11 +110,10 @@ class Geocoder:
                 s = self.jarvis.input("Enter the full street address to"
                                       " geocode (or type help for options): ")
 
-            if s.lower() == 'help':
-                self.help()
-                s = None
-            else:
+            if s.lower() != 'help':
                 return s.lower()
+            self.help()
+            s = None
 
     def clean_addr(self, s):
         """Reformat a string to be URL friendly
@@ -180,16 +174,14 @@ class Geocoder:
             from the request
         """
         data = response.json()
-        matches = data['result']['addressMatches']
-
-        if matches:
+        if matches := data['result']['addressMatches']:
             best_match = matches[0]
 
-            output = {'Address matched': best_match['matchedAddress'],
-                      'Latitude': str(best_match['coordinates']['y']),
-                      'Longitude': str(best_match['coordinates']['x'])}
+            return {
+                'Address matched': best_match['matchedAddress'],
+                'Latitude': str(best_match['coordinates']['y']),
+                'Longitude': str(best_match['coordinates']['x']),
+            }
 
         else:
-            output = None
-
-        return output
+            return None

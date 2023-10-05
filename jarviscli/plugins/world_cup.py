@@ -36,20 +36,13 @@ def hello_world(jarvis,s):
         if len(args) > 1:
             jarvis.say("world_cup year: returns the champion of that year",Fore.GREEN)
             jarvis.say("world_cup country: returns the number of titles of country",Fore.GREEN)
+        elif args[0].isnumeric():
+            year = int(args[0])
+            country = data.get(year,'There were no World Cup on this year!')
+            jarvis.say(country)
         else:
-
-            if args[0].isnumeric():
-                year = int(args[0])
-                country = data.get(year,'There were no World Cup on this year!')
-                jarvis.say(country)
-            else:
-                country = args[0]
-                country = country.lower()
-                count = 0
-
-                for value in data.values():
-                    if value.lower() == country:
-                        count += 1
-                
-                jarvis.say(f"{count} titles")
+            country = args[0]
+            country = country.lower()
+            count = sum(1 for value in data.values() if value.lower() == country)
+            jarvis.say(f"{count} titles")
                 

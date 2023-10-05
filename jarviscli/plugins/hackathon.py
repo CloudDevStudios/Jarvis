@@ -28,14 +28,12 @@ class Hackathon():
         return csrf_token
 
     def get_hackathon_data(self, csrf_token):
-        headers = {}
-        headers['Referer'] = 'https://www.hackerearth.com/challenges/'
-        headers['X-CSRFToken'] = csrf_token
-        headers['X-Requested-With'] = 'XMLHttpRequest'
-
-        cookie = {}
-        cookie['csrftoken'] = csrf_token
-
+        headers = {
+            'Referer': 'https://www.hackerearth.com/challenges/',
+            'X-CSRFToken': csrf_token,
+            'X-Requested-With': 'XMLHttpRequest',
+        }
+        cookie = {'csrftoken': csrf_token}
         request = requests.post(
             'https://www.hackerearth.com/AJAX/filter-challenges/',
             data='',
@@ -66,11 +64,6 @@ class Hackathon():
                     'div', {
                         'class': 'challenge-list-meta challenge-card-wrapper'}).text.replace(
                     "\n", " ").strip()
-                jarvis.say(
-                    "[{}] {}\n{}\n{}\n\n".format(
-                        str(i),
-                        challenge_name,
-                        challenge_type,
-                        date_time))
+                jarvis.say(f"[{str(i)}] {challenge_name}\n{challenge_type}\n{date_time}\n\n")
         else:
             jarvis.say("No hackathon data found.")

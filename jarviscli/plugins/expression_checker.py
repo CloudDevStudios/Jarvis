@@ -18,7 +18,7 @@ def expression_checker(jarvis, s):
         terminateCurrentAnalyzation = 0
         for character in expression:
             if character not in validCharacters:
-                print("Not Valid Expression! Invalid Character : " + character)
+                print(f"Not Valid Expression! Invalid Character : {character}")
                 terminateCurrentAnalyzation = 1
                 break
 
@@ -65,21 +65,18 @@ def expression_checker(jarvis, s):
                 previousIsCloseBracket = 1
         stack = []
         for character in expression:
-            if character == ')':
-                if len(stack) == 0:
+            if character == '(':
+                stack.append(character)
+            elif character == ')':
+                if stack:
+                    picked = stack.pop()
+                    if picked != '(':
+                        stack.extend((picked, character))
+                else:
                     print("Not Valid Expression! Invalid Bracket Progression")
                     terminateCurrentAnalyzation = 1
                     break
-                else:
-                    picked = stack.pop()
-                    if picked == '(':
-                        continue
-                    else:
-                        stack.append(picked)
-                        stack.append(character)
-            elif character == '(':
-                stack.append(character)
-        if len(stack) != 0:
+        if stack:
             print("Not Valid Expression! Invalid Bracket Progression")
             terminateCurrentAnalyzation = 1
         if terminateCurrentAnalyzation:

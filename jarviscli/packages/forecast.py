@@ -19,8 +19,7 @@ def main(jarvis, s):
 
     # if no location is given, use the current location
     if not location:
-        location = "{},{}".format(
-            current_location['city'], current_location['country_code'])
+        location = f"{current_location['city']},{current_location['country_code']}"
     country = current_location['country_name']
 
     # If country is not US, shows weather in Celsius
@@ -48,27 +47,21 @@ def main(jarvis, s):
 
     try:
         jarvis.say(
-            "Weather forecast in {} for the next 7 days.".format(
-                j['city']['name'].title()
-            ),
-            Fore.BLUE
+            f"Weather forecast in {j['city']['name'].title()} for the next 7 days.",
+            Fore.BLUE,
         )
         print(jarvis)
         jarvis.say("TEST")
         for cnt, day_dict in enumerate(j['list']):
-            jarvis.say("{}:".format(week_from_today[cnt]), Fore.BLUE)
-            jarvis.say("\tWeather: {}".format(
-                day_dict['weather'][0]['main']), Fore.BLUE)
+            jarvis.say(f"{week_from_today[cnt]}:", Fore.BLUE)
+            jarvis.say(f"\tWeather: {day_dict['weather'][0]['main']}", Fore.BLUE)
             jarvis.say(
-                "\tMax temperature: {} {}".format(
-                    round(day_dict['temp']['max'], 1), units['str_units']),
-                Fore.BLUE
+                f"\tMax temperature: {round(day_dict['temp']['max'], 1)} {units['str_units']}",
+                Fore.BLUE,
             )
             jarvis.say(
-                "\tMin temperature: {} {}\n".format(
-
-                    round(day_dict['temp']['min'], 1), units['str_units']),
-                Fore.BLUE
+                f"\tMin temperature: {round(day_dict['temp']['min'], 1)} {units['str_units']}\n",
+                Fore.BLUE,
             )
     except KeyError:
         jarvis.say("The forecast information could not be found.", Fore.RED)

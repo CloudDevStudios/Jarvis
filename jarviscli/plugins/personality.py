@@ -12,9 +12,8 @@ FILE_PATH = os.path.abspath(os.path.dirname(__file__))
 def read_questions():
     Q = []
     with open(os.path.join(FILE_PATH,
-                           "../data/personality_questions.tsv")) as f:
-        for i, line in enumerate(f):
-            Q.append([i + 1] + line.strip().split('\t'))
+                               "../data/personality_questions.tsv")) as f:
+        Q.extend([i + 1] + line.strip().split('\t') for i, line in enumerate(f))
     return Q
 
 
@@ -31,10 +30,7 @@ class personality_test:
     def __init__(self):
         self.Q = read_questions()
         self.answers = {}
-        self.instruction = Back.YELLOW + "There are a total of " +\
-            "32 pairs of descriptions. For each pair, choose on a scale of " +\
-            "1-5. Choose 1 if you are all the way to the left, and choose " +\
-            "3 if you are in the middle, etc." + Style.RESET_ALL
+        self.instruction = f"{Back.YELLOW}There are a total of 32 pairs of descriptions. For each pair, choose on a scale of 1-5. Choose 1 if you are all the way to the left, and choose 3 if you are in the middle, etc.{Style.RESET_ALL}"
 
         self.types = ['IE', 'SN', 'FT', 'JP']
         self.scoring_scheme = ((30, (15, 23, 27), (3, 7, 11, 19, 31)),
@@ -87,12 +83,8 @@ class personality_test:
 
         type_str = ''.join(self.type)
         jarvis.say(
-            "{}Your personality is: {}{}{}{}".format(
-                Fore.BLUE,
-                Fore.BLACK,
-                Back.MAGENTA,
-                type_str,
-                Style.RESET_ALL))
+            f"{Fore.BLUE}Your personality is: {Fore.BLACK}{Back.MAGENTA}{type_str}{Style.RESET_ALL}"
+        )
         jarvis.say(
             "Redirecting to your personality analysis\
                  in 3s...", color=Fore.BLUE)

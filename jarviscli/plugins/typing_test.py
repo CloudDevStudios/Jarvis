@@ -101,7 +101,7 @@ def format_time(seconds):
     new_minutes = '0' * (2 - len(new_minutes)) + new_minutes
     new_seconds = '0' * (2 - len(new_seconds)) + new_seconds
 
-    return new_minutes + ':' + new_seconds
+    return f'{new_minutes}:{new_seconds}'
 
 
 def take_input():
@@ -165,15 +165,14 @@ def game_end():
     else:
         wpm = 0
 
-    print(default_text_color + '\n\nWords per minute - {}'.format(wpm))
+    print(f'{default_text_color}\n\nWords per minute - {wpm}')
     if wpm >= 20:
         with open(os.path.join(FILE_PATH, "../data/typing_test_data.csv"),
-                  mode='r') as f:
+                          mode='r') as f:
             data = list(csv.reader(f))
             for i in range(len(data)):
                 if int(data[i][0]) > int(wpm) and i != 0:
-                    print('You are better than {}% of people!'
-                          .format(float(data[i - 1][1]) * 100))
+                    print(f'You are better than {float(data[i - 1][1]) * 100}% of people!')
                     break
 
 

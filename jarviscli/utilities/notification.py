@@ -18,7 +18,7 @@ LINUX_URGENCY_CONVERTER = {0: 'low', 1: 'normal', 2: 'critical'}
 
 def notify__LINUX(name, body, urgency=NOTIFY_NORMAL):
     urgency = LINUX_URGENCY_CONVERTER[urgency]
-    system("notify-send -u {} '{}' '{}'".format(urgency, str(name), str(body)))
+    system(f"notify-send -u {urgency} '{str(name)}' '{str(body)}'")
 
 
 WIN_URGENCY_CONVERTER = {0: None, 1: 'icons\\default.ico', 2: "icons\\warn.ico"}
@@ -52,7 +52,7 @@ CLI_FALLBACK_URGENCY_CONVERTER = {0: '', 1: '!', 2: '!!!'}
 
 def notify__CLI_FALLBACK(name, body, urgency=NOTIFY_NORMAL):
     urgency = CLI_FALLBACK_URGENCY_CONVERTER[urgency]
-    print("NOTIFICATION {} ====> {} - {}".format(urgency, str(name), str(body)))
+    print(f"NOTIFICATION {urgency} ====> {str(name)} - {str(body)}")
 
 
 if IS_MACOS:
@@ -61,15 +61,14 @@ if IS_MACOS:
 elif IS_WIN and WIN_VER == '10':
     import win10toast
     notify = notify__WIN10
+elif executable_exists("notify-send"):
+    from os import system
+    notify = notify__LINUX
 else:
-    if executable_exists("notify-send"):
-        from os import system
-        notify = notify__LINUX
-    else:
-        try:
-            import tkinter as tk
-            from tkinter import messagebox as tkMessageBox
-            from threading import Thread
-            notify = notify__GUI_FALLBACK
-        except ImportError:
-            notify = notify__CLI_FALLBACK
+    try:
+        import tkinter as tk
+        from tkinter import messagebox as tkMessageBox
+        from threading import Thread
+        notify = notify__GUI_FALLBACK
+    except ImportError:
+        notify = notify__CLI_FALLBACK

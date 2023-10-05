@@ -24,8 +24,7 @@ def numbersapi(jarvis, s):
         return
 
     for number in parts:
-        data = get_data(jarvis, number)
-        if data:
+        if data := get_data(jarvis, number):
             jarvis.say(f"\t{data}", Fore.CYAN)
 
 

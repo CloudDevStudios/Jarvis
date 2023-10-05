@@ -46,9 +46,7 @@ class TaskManagerTest(PluginTest):
     def get_task_count(self):
         m = Memory("tasks.json")
         task_list = m.get_data("tasks_list")
-        if task_list is None:
-            return 0
-        return len(task_list)
+        return 0 if task_list is None else len(task_list)
 
     def lookup_taks_priority_in_memory(self, task_name, desired_priority):
         m = Memory("tasks.json")
@@ -70,10 +68,7 @@ class TaskManagerTest(PluginTest):
         task_list = m.get_data("tasks_list")
         if task_list is None:
             return False
-        result = False
-        for i in range(len(task_list)):
-            if task_list[i]["name"] == task_name:
-                result = True
+        result = any(task_list[i]["name"] == task_name for i in range(len(task_list)))
         self.remove_task_from_memory(task_name)
         return result
 

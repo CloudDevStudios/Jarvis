@@ -46,17 +46,14 @@ class lyrics():
         if not song or not artist:
             # error if artist or song don't exist
             return "you forgot to add either song name or artist name"
-        response = get_lyric(artist, song)
-        if response:
+        if response := get_lyric(artist, song):
             return response
         else:
             return "Song or Singer does not exist or the API does not have lyrics"
 
     @classmethod
-    def parse(self, s):
-        # separate song/artist/album by a -
-        information = s.split('-')
-        return information
+    def parse(cls, s):
+        return s.split('-')
 
 
 """

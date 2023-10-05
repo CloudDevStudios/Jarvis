@@ -16,7 +16,7 @@ def generate_random_list(jarvis, str):
 
 
 def get_user_input(jarvis):
-    ls = list()
+    ls = []
     while True:
         try:
             user_input = jarvis.input("Enter string (enter \"JarvisStop\" to end): ")

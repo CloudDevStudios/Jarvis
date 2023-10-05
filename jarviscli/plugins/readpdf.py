@@ -23,7 +23,7 @@ class readpdfjarvis():
         pdfRead = PyPDF2.PdfFileReader(pdf)
         for i in range(pdfRead.getNumPages()):
             page = pdfRead.getPage(i)
-            jarvis.say("Page No: " + str(1 + pdfRead.getPageNumber(page)))
+            jarvis.say(f"Page No: {str(1 + pdfRead.getPageNumber(page))}")
             pageContent = page.extractText()
             jarvis.say(pageContent)
         speak = pyttsx3.init()
